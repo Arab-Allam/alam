@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/FF Shamel Family Sans One Bold.ttf",
+      "sha1": "974766b389ac0e4d06bd3c0e14b873e3ea500047"
+    },
+    {
+      "path": "assets/fonts/Fonts.js",
+      "sha1": "e53f3390bc0d1452ad7b1fee1d5274938fafe58d"
+    }
+  ]
+}
