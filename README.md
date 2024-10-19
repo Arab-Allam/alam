@@ -83,10 +83,14 @@ To learn more about React Native, take a look at the following resources:
 
 ## Firebase
 # Create Code
-  const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // Generate 6-character room code
 
+  ```javascript
+
+  const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // Generate 6-character room code
+ ```
 # Create Room
 
+  ```javascript
 
 import database from '@react-native-firebase/database';
 
@@ -109,10 +113,12 @@ const createRoom = async (playerName, playerUid,roomCode) => {
   return roomCode; 
 };
 
+  ```
 
 # Join Room Function:
 //this for other player to join room 
 
+  ```javascript
 
 const joinRoom = async (roomCode, playerName, playerUid) => {
   const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -139,9 +145,11 @@ const joinRoom = async (roomCode, playerName, playerUid) => {
   }
 };
 
+  ```
 
 # Update Score and Switch Turn:
 //this when you want to switch the turn to other player
+  ```javascript
 
 const updateScoreAndSwitchTurn = async (roomCode, currentPlayerUid, newScore) => {
   const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -165,10 +173,12 @@ const updateScoreAndSwitchTurn = async (roomCode, currentPlayerUid, newScore) =>
     }
   }
 };
+  ```
 
 # Listen to room changes
 
 // this part to update the UI acording to change value in DB , its like listner , witch mean if player1 answer correct you can Know when update turn to "PLayer2" to navigate to second screen
+  ```javascript
 
 const listenToRoomChanges = (roomCode, setGameState) => {
   const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -185,9 +195,11 @@ const stopListening = (roomCode) => {
   roomRef.off(); // Detach the listener
 };
 
+  ```
 
 # Example UI (this to know how use above two function):
 
+  ```javascript
 
 import React, { useState, useEffect } from 'react';
 import { Text, View, Button } from 'react-native';
@@ -220,3 +232,5 @@ const GameScreen = ({ roomCode, playerUid }) => {
 };
 
 export default GameScreen;
+  ```
+
