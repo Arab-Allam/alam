@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import CharactersAndBackground from "../component/CharactersAndBackground";
-const PlayWithFriend = () =>{
+const Intro = () =>{
 
     return(
 <View>
@@ -11,4 +11,4 @@ const PlayWithFriend = () =>{
 </View>
     )
 }
-export default PlayWithFriend;
+export default Intro;

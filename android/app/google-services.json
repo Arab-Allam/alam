@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "987401385370",
+    "project_id": "alamtest-d6c62",
+    "storage_bucket": "alamtest-d6c62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987401385370:android:3e6f5d5d3019bb0c563623",
+        "android_client_info": {
+          "package_name": "com.alam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGBbjpgPeKsuO2F2rIZp33z32Rvh7v0PU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

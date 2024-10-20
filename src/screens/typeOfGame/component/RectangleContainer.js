@@ -18,7 +18,7 @@ const RectangleContainer = () => {
         <Text style={[Styles.TextStyle, { padding: 0, color: 'white',position:'absolute',top: width >= TABLET_WIDTH ? responsiveHeight(29): responsiveHeight(30)}]}>
           إبــدا مـعـنا الأن
         </Text>
-        <Text style={[Styles.TextStyle, { fontSize: width >= TABLET_WIDTH ? 23.5 : responsiveFontSize(1.6),position:'absolute',top: width >= TABLET_WIDTH ? responsiveHeight(41): responsiveHeight(45),color:"rgba(0, 0, 0, 0.70);"}]}>
+        <Text style={[Styles.TextStyle, { fontSize: width >= TABLET_WIDTH ? responsiveFontSize(1.1) : responsiveFontSize(1.4),position:'absolute',top: width >= TABLET_WIDTH ? responsiveHeight(41): responsiveHeight(45),color:"rgba(0, 0, 0, 0.70);"}]}>
           لنتعـــرف عــلى عـراب، عــراب هـو مسـاعدك الشـخـصي و صــاحبـك المـفــضل لتـحـظى بلغة عربـية فصيـحة ورائـعة
         </Text>
         

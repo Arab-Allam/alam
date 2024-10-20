@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, TextInput, View, Modal, Pressable } from "react-native";
+import { Text, TextInput, View, Modal, Pressable,Dimensions} from "react-native";
 import Images from "../../../component/Images";
 import {
   responsiveFontSize,
@@ -22,9 +22,14 @@ const EnterASentences = () => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [wordModalTimeLeft, setWordModalTimeLeft] = useState(20);
   const [apiResult, setApiResult] = useState(null);
+  const [answer, setAnswer] = useState(null);
+  const [correct_iraap, setCorrect_iraap] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [result, setresult] = useState(false);
 
   let timerId;
-
+  const {width} = Dimensions.get('window');
+  const TABLET_WIDTH = 968;
   useEffect(() => {
     if (timeLeft > 0 && !isInputDisabled) {
       timerId = setTimeout(() => {
@@ -33,7 +38,6 @@ const EnterASentences = () => {
     } else if (timeLeft === 0) {
       setIsInputDisabled(true);
       setIsTimeUp(true);
-      handleSendSentence();
       setTimeout(() => {
         setIsModalVisible(true);
       }, 1000);
@@ -50,8 +54,13 @@ const EnterASentences = () => {
 
       return () => clearTimeout(wordTimerId);
     } else if (wordModalTimeLeft === 0) {
-      setIsWordModalVisible(false);
-      setWordModalTimeLeft(20);
+      setIsInputDisabled(true);
+      setIsTimeUp(true);
+      setTimeout(() => {
+        setIsModalVisible(true);
+      }, 1000); 
+      // setIsWordModalVisible(false);
+      // setWordModalTimeLeft(20);
     }
   }, [isWordModalVisible, wordModalTimeLeft]);
 
@@ -79,6 +88,21 @@ const EnterASentences = () => {
       });
       const data = await response.json();
       console.log(data);
+      const analysis = data.analysis;
+
+      let extractedFinalAnswer = null;
+      let extractedCorrectIrab = null;
+      setresult(data.result)
+      if (analysis.includes("الإجابة النهائية")) {
+          extractedFinalAnswer = analysis.split("الإجابة النهائية:")[1].split("\n")[0].trim();
+          setAnswer(extractedFinalAnswer);
+      }
+
+      const correctIrabMatch = analysis.match(/- الإعراب الصحيح:\s*(.+)/);
+      if (correctIrabMatch) {
+          extractedCorrectIrab = correctIrabMatch[1].trim();
+          setCorrect_iraap(extractedCorrectIrab)
+      }
 
     } catch (error) {
       console.error("Error in handleSendSentence:", error);
@@ -109,7 +133,19 @@ const EnterASentences = () => {
     setIsWordModalVisible(false);
     handleSendSentence();
     setWordInput("");
+  
+    // Check if time is up
+    if (isTimeUp) {
+      // Show the result modal immediately if time is up
+      setShowResultModal(true); // Or whatever you want to do
+    } else {
+      // Otherwise, show the result modal after a delay
+      setTimeout(() => {
+        setShowResultModal(true);
+      }, 500);
+    }
   };
+  
 
   const closeModal = () => {
     setIsModalVisible(false);
@@ -258,7 +294,7 @@ const EnterASentences = () => {
       </View>
 
       <Modal
-        visible={isModalVisible && isTimeUp}
+        visible={isModalVisible && isTimeUp }
         supportedOrientations={["landscape"]}
         transparent={true}
         animationType="fade"
@@ -383,8 +419,63 @@ const EnterASentences = () => {
         </View>
       </Modal>
 
+{/* make this apper  */}
+<Modal
+        visible={isModalVisible && isTimeUp }
+        supportedOrientations={["landscape"]}
+        transparent={true}
+        animationType="fade"
+>
+  <View
+    style={{
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    }}
+  >
+    <View
+      style={{
+        width: responsiveWidth(70),
+        padding: responsiveWidth(5),
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: responsiveFontSize(2),
+          fontFamily: Font.bold,
+          marginBottom: 20,
+        }}
+      >
+        انتهى الوقت ⏰ لقد خسرت نقطة
+      </Text>
+      <Pressable
+        onPress={closeModal}
+        style={{
+          backgroundColor: "#6CBFF8",
+          padding: 10,
+          borderRadius: 5,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: responsiveFontSize(2),
+            fontFamily: Font.bold,
+            color: "#fff",
+          }}
+        >
+          موافق
+        </Text>
+      </Pressable>
+    </View>
+  </View>
+</Modal>
+
       <Modal
-        visible={apiResult !== null}
+        visible={showResultModal}
         supportedOrientations={["landscape"]}
         transparent={true}
         animationType="fade"
@@ -409,18 +500,11 @@ const EnterASentences = () => {
             }}>
               نتيجة التحليل
             </Text>
-            {apiResult && apiResult.error ? (
-              <Text style={{ color: 'red', textAlign: 'center' }}>{apiResult.error}</Text>
-            ) : (
-              <>
-                <Text>الجملة: {apiResult?.sentence}</Text>
-                <Text>الكلمة: {apiResult?.word}</Text>
-                <Text>الإعراب: {apiResult?.irab}</Text>
-                <Text>التحليل: {apiResult?.analysis}</Text>
-              </>
-            )}
+            <Text>الإعراب الصحيح: {correct_iraap}</Text>
+            <Text>الإجابة النهائية: {answer}</Text>
+            <Text>{result}</Text>
             <Pressable
-              onPress={() => setApiResult(null)}
+              onPress={() => setShowResultModal(false)}
               style={{
                 backgroundColor: "#6CBFF8",
                 padding: 10,
