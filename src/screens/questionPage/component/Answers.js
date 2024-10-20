@@ -7,12 +7,12 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-const Answers = () => {
+const Answers = ({Answers1,Answers2,Answers3,Answers4}) => {
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
 
   return (
-    <View style={[QuestionPageStyle.PlayerInfoContainer,{flexDirection:'column',alignItems:'center',gap:width >= TABLET_WIDTH ? 20 : 10}]}>
+    <View style={{gap:responsiveFontSize(1), marginTop:responsiveHeight(3)}}>
   
       <View style={{flexDirection: 'row',gap:20}}>
       <TouchableOpacity>
