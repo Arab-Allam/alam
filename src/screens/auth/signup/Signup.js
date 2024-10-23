@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {Text, View, Dimensions, TouchableOpacity, Alert} from 'react-native';
+import React from 'react';
+import {Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import Title from '../component/Title';
 import AuthBackground from '../component/AuthBackground';
 import MyTextinput from '../../../component/MyTextinput';
@@ -9,41 +9,10 @@ import {responsiveFontSize,responsiveHeight,responsiveWidth,} from 'react-native
 import {Font} from '../../../../assets/fonts/Fonts';
 import Images from '../../../component/Images';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
-
-const signupUser = async (name, email, password) => {
-  try {
-    const response = await axios.post('https://your-api-url.com/signup', {
-      name,
-      email,
-      password
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Signup error:', error);
-    throw error;
-  }
-};
-
 const Signup = () => {
     const navigation = useNavigation();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleSignup = async () => {
-      try {
-        const result = await signupUser(name, email, password);
-        Alert.alert('Success', 'Signup successful!');
-        navigation.navigate('TypeOfGame');
-
-      } catch (error) {
-        Alert.alert('Error', 'Signup failed. Please try again.');
-      }
-    };
 
   return (
     <View style={Styles.container}>
@@ -57,7 +26,7 @@ const Signup = () => {
           <View
             style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
             <Title
-              text="انشاء حساب"
+              text="تسجيل دخول"
               textStyle={{
                 fontSize: responsiveFontSize(3),
                 color: '#8AC9FF',
@@ -75,8 +44,6 @@ const Signup = () => {
               label="الاسم "
               placeholder="الاسم"
               keyboardType="default"
-              onChangeText={setName}
-              value={name}
               labelSyle={{
                 alignSelf: 'flex-start',
                 fontSize: responsiveFontSize(1.2),
@@ -95,8 +62,6 @@ const Signup = () => {
               label="الإيميل"
               placeholder="Email@gmail.com"
               keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
               labelSyle={{
                 alignSelf: 'flex-start',
                 fontSize: responsiveFontSize(1.2),
@@ -114,8 +79,6 @@ const Signup = () => {
               placeholder="**********"
               keyboardType="default"
               isSecire
-              onChangeText={setPassword}
-              value={password}
               labelSyle={{
                 alignSelf: 'flex-start',
                 fontSize: responsiveFontSize(1.2),
@@ -144,7 +107,7 @@ const Signup = () => {
                     ? responsiveWidth(14)
                     : responsiveWidth(14),
               }}>
-              <Mybutton ButtonName="تسجيل الدخول" onPress={handleSignup} />
+              <Mybutton ButtonName="تسجيل الدخول" />
 
 
               <TouchableOpacity onPress={()=> navigation.navigate('Signin') } style={{flexDirection: 'column', alignSelf: 'center',}}>

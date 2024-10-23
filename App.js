@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, startTransition } from "react";
+import React, { useState,useEffect, Suspense, startTransition } from "react";
 import { SafeAreaView, Text, View, ActivityIndicator } from "react-native";
 import TypeOfGame from "./src/screens/typeOfGame/page/TypeOfGame";
 import MainStackes from "./src/screens/mainStack/page/MainStackes";
@@ -13,8 +13,26 @@ import {
     storageHandler,
     clearStorage,
   } from './src/screens/utils/helpers/Helpers';
+  import auth from '@react-native-firebase/auth';
+
 
 const App = () => {
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState();
+
+
+    function onAuthStateChanged(user) {
+        setUser(user);
+        if (initializing) setInitializing(false);
+      }
+
+      useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+      }, []);
+    
+    
+
     const {i18n} = useTranslation();
     const language = i18n.language;
       clearStorage();
@@ -48,12 +66,20 @@ const App = () => {
     useEffect(() => {
         console.log('Firebase config:', JSON.stringify(firebase.app().options));
       }, []);
-
-  return (
-    <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
-      <MainStackes />
-    </Suspense>
-  );
-};
-
-export default App;
+      if (initializing) return null;
+    //   if (!user) {
+    //     return (
+    //       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    //         <Text>Loading...</Text> 
+    //       </SafeAreaView>
+    //     );
+    //   }
+    
+      return (
+        <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+          <MainStackes />
+        </Suspense>
+      );
+    };
+    
+    export default App;
