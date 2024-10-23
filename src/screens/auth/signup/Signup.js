@@ -99,13 +99,17 @@ const Signup = () => {
               alignItems: 'center',
               flex: 2.5,
               justifyContent: 'center',
+              gap: 5,
             }}>
             <View
               style={{
+                alignContent: 'flex-end',
+                alignSelf: 'flex-end',
                 marginTop:
                   width >= TABLET_WIDTH
                     ? responsiveWidth(14)
                     : responsiveWidth(14),
+                gap: 5,
               }}>
               <Mybutton ButtonName="تسجيل الدخول" />
 
