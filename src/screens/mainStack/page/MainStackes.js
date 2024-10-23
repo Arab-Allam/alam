@@ -12,9 +12,9 @@ const Stack = createStackNavigator();
 const MainStackes = () =>{
   return (
     <NavigationContainer>
-      <Stack.Navigator initalRouteName="QuestionPage">
+      <Stack.Navigator initalRouteName="Signup">
       
-      <Stack.Screen name="QuestionPage" component={QuestionPage} options={{ headerShown: false }} /> 
+      {/* <Stack.Screen name="QuestionPage" component={QuestionPage} options={{ headerShown: false }} />  */}
       {/* <Stack.Screen name="TypeOfGame" component={TypeOfGame} options={{ headerShown: false }} /> */} 
       {/* <Stack.Screen name="EnterASentences" component={EnterASentences} options={{ headerShown: false }} /> */}
       {/* <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />  */}
@@ -22,7 +22,7 @@ const MainStackes = () =>{
 
      {/* <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} /> */}
       {/* <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}/>  */}
-  {/* <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} /> */}
+  <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
       <Stack.Screen name="TypeOfGame" component={TypeOfGame} options={{ headerShown: false }} /> 
 
 
