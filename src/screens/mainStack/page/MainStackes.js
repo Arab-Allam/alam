@@ -21,7 +21,7 @@ const MainStackes = () =>{
 
 
      {/* <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} /> */}
-      {/* <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}/>  */}
+      <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}/> 
   <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
       <Stack.Screen name="TypeOfGame" component={TypeOfGame} options={{ headerShown: false }} /> 
 

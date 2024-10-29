@@ -84,7 +84,8 @@ const Signin = () => {
           <Mybutton ButtonName="تسجيل الدخول" op={handleSignin}/>
         </View>
         <TouchableOpacity style={{alignSelf:'center',justifyContent:'center', zIndex:10}} onPress={()=> navigation.navigate('Signup')}>
-              <Text style={{ color: '#8AC9FF', fontSize: responsiveFontSize(1.5), textDecorationLine: 'underline' }}>
+                    
+              <Text style={{ color: '#8AC9FF', fontSize: responsiveFontSize(1.5), textDecorationLine: 'underline', fontFamily: Font.bold}}>
                 إنشاء حساب
               </Text>
             </TouchableOpacity>
