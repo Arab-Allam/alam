@@ -234,158 +234,42 @@ const GameScreen = ({ roomCode, playerUid }) => {
 export default GameScreen;
   ```
  ```javascript
-import React, { useState } from 'react';
-import { Text, View, Dimensions, TouchableOpacity, Alert } from 'react-native';
-import Title from '../component/Title';
-import AuthBackground from '../component/AuthBackground';
-import MyTextinput from '../../../component/MyTextinput';
-import Styles from '../component/Style';
-import Mybutton from '../../../component/MyButton';
-import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
-import { Font } from '../../../../assets/fonts/Fonts';
-import Images from '../../../component/Images';
-import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+   const userRe = await auth().createUserWithEmailAndPassword(email, password);
+    const userId = userRe.user.uid;
 
-const { width } = Dimensions.get('window');
-const TABLET_WIDTH = 968;
+    await firestore().collection('users').doc(userId).set({
+      name: name,
+      email: email,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+    });
 
-const Signup = () => {
-  const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+////////////////////////////////////////////////////////////////////
+const loginUser = async (email, password) => {
+  try {
+    const userCredential = await auth().signInWithEmailAndPassword(email, password);
+    const userId = userCredential.user.uid;
 
-  const handleSignup = async () => {
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      Alert.alert('Success', 'Signup successful!');
-      navigation.navigate('TypeOfGame');
-    } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        Alert.alert('Error', 'That email address is already in use!');
-      } else if (error.code === 'auth/invalid-email') {
-        Alert.alert('Error', 'That email address is invalid!');
-      } else {
-        Alert.alert('Error', 'Signup failed. Please try again.');
-      }
-      console.error(error);
+    const userDoc = await firestore().collection('users').doc(userId).get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      console.log('User data:', userData);
+      
+      Alert.alert('Success', 'Login successful!');
+      
+    } else {
+      Alert.alert('Error', 'User data not found in Firestore.');
     }
-  };
-
-  return (
-    <View style={Styles.container}>
-      <AuthBackground style={{ flex: 1 }}>
-        <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-start' }}>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-            <Title
-              text="انشاء حساب"
-              textStyle={{
-                fontSize: responsiveFontSize(3),
-                color: '#8AC9FF',
-                fontFamily: Font.bold,
-              }}
-            />
-          </View>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-start' }}>
-            <MyTextinput
-              label="الاسم "
-              placeholder="الاسم"
-              keyboardType="default"
-              onChangeText={setName}
-              value={name}
-              labelSyle={{
-                alignSelf: 'flex-start',
-                fontSize: responsiveFontSize(1.2),
-                color: '#F39E09',
-                backgroundColor: 'white',
-                zIndex: 10,
-                fontFamily: Font.bold,
-              }}
-              styleTextInput={{
-                height: responsiveWidth(4),
-                fontSize: responsiveFontSize(1),
-                fontFamily: Font.bold,
-              }}
-            />
-            <MyTextinput
-              label="الإيميل"
-              placeholder="Email@gmail.com"
-              keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
-              labelSyle={{
-                alignSelf: 'flex-start',
-                fontSize: responsiveFontSize(1.2),
-                color: '#F39E09',
-                fontFamily: Font.bold,
-              }}
-              styleTextInput={{
-                height: responsiveWidth(4),
-                fontSize: responsiveFontSize(1),
-                fontFamily: Font.bold,
-              }}
-            />
-            <MyTextinput
-              label="كلمة المرور"
-              placeholder="**********"
-              keyboardType="default"
-              isSecire
-              onChangeText={setPassword}
-              value={password}
-              labelSyle={{
-                alignSelf: 'flex-start',
-                fontSize: responsiveFontSize(1.2),
-                color: '#F39E09',
-                backgroundColor: 'white',
-                zIndex: 10,
-                fontFamily: Font.bold,
-              }}
-              styleTextInput={{
-                height: responsiveWidth(4),
-                fontSize: responsiveFontSize(1),
-                fontFamily: Font.bold,
-              }}
-            />
-          </View>
-          <View style={{ alignItems: 'center', flex: 2.5, justifyContent: 'center' }}>
-            <View style={{
-                marginTop: width >= TABLET_WIDTH
-                  ? responsiveWidth(14)
-                  : responsiveWidth(14),
-              }}>
-              <Mybutton ButtonName="تسجيل الدخول" onPress={handleSignup} />
-              <TouchableOpacity onPress={() => navigation.navigate('Signin')} style={{ flexDirection: 'column', alignSelf: 'center' }}>
-                <Text style={{
-                    color: '#8AC9FF',
-                    fontSize: responsiveFontSize(1),
-                    textDecorationLine: 'underline',
-                    fontFamily: Font.bold,
-                    marginTop: 10,
-                  }}>
-                  ليس لديك حساب قم 
-                  بتسجيل الدخول
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </AuthBackground>
-      <View>
-        <Images
-          imageURL={require('../../../../assets/images/BigGirl.png')}
-          imageStyle={{
-            width: width >= TABLET_WIDTH ? responsiveWidth(60) : responsiveWidth(53),
-            height: width >= TABLET_WIDTH ? responsiveWidth(50) : responsiveWidth(45),
-            marginTop: width >= TABLET_WIDTH ? responsiveWidth(20) : responsiveWidth(4),
-            alignSelf: '',
-          }}
-        />
-      </View>
-    </View>
-  );
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      Alert.alert('Error', 'No user found with this email!');
+    } else if (error.code === 'auth/wrong-password') {
+      Alert.alert('Error', 'Incorrect password!');
+    } else {
+      Alert.alert('Error', 'Login failed. Please try again.');
+    }
+    console.error(error);
+  }
 };
 
-export default Signup;
  ```
 
