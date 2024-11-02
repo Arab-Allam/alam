@@ -62,7 +62,8 @@ const CharactersAndBackground = () => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [result, setresult] = useState(false);
   const [GameState,setGameState] = useState(null);
-
+  const [role,setRole] = useState(null);
+  const [CanOtherPlayerPlay,setCanOtherPlayerPlay] = useState(null);
   let timerId;
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;

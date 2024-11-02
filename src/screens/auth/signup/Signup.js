@@ -14,6 +14,8 @@ import {Font} from '../../../../assets/fonts/Fonts';
 import Images from '../../../component/Images';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '../../../../firebase';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
@@ -27,12 +29,14 @@ const Signup = () => {
     try {
       const userRef = firestore.collection('users').doc();
       await userRef.set({
-        // uid: userRef.id,
+        uid: userRef.id,
         name: name,
         email: email,
         password: password, // Never store plain passwords in a real app
       });
       console.log('User registered!');
+      await AsyncStorage.setItem('player1', userRef.id);
+      console.log('User registered and UID stored as player1!');
     } catch (error) {
       console.error('Error registering user: ', error);
     }
