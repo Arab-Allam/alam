@@ -46,20 +46,12 @@ const Signin = () => {
   return (
     <View style={Styles.container}>
       <AuthBackground style={{flex: 1}}>
-        <View
-          style={{
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'flex-start',
-          }}>
-          <View
-            style={{alignItems: 'center', flex: 1, justifyContent: 'center',fontFamily:Font.bold,}}>
-            <Title
-              text="تسجيل دخول"
-              textStyle={{fontSize: responsiveFontSize(3),color:"#8AC9FF"}}
-            />
+      <View style={{ alignItems: 'center', flex: 1,  justifyContent: 'flex-start' }}>
+          <View style={{  justifyContent: 'flex-start', marginTop:responsiveHeight(3)}}>
+            <Title text="تسجيل الدخول" textStyle={{fontSize: responsiveFontSize(3),color: '#8AC9FF',fontFamily: Font.bold}}/>
           </View>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent:'flex-start'}}>
+          
+          <View style={{justifyContent: 'flex-start',alignItems: 'center',}}> 
             <MyTextinput
               label="الإيميل"
               placeholder="Email@gmail.com"
@@ -80,19 +72,30 @@ const Signin = () => {
               value={password}
             />
           </View>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent:'flex-end'}}>
+
+          <View style={{ alignItems: 'center', justifyContent: 'center', flex:1}}>
+          <View style={{ alignContent: 'flex-end', alignSelf: 'flex-end', marginTop: responsiveWidth(2),alignSelf:'centers'}}> 
           <Mybutton ButtonName="تسجيل الدخول" op={handleSignin}/>
         </View>
+<<<<<<< HEAD
         <TouchableOpacity style={{alignSelf:'center',justifyContent:'center', zIndex:10}} onPress={()=> navigation.navigate('Signup')}>
                     
               <Text style={{ color: '#8AC9FF', fontSize: responsiveFontSize(1.5), textDecorationLine: 'underline', fontFamily: Font.bold}}>
                 إنشاء حساب
               </Text>
+=======
+        <TouchableOpacity style={{flexDirection: 'column', justifyContent:'center',alignSelf: 'center',flex:0.3,zIndex:100}} onPress={()=> navigation.navigate('Signup')}>
+        <Text style={{color: '#8AC9FF',fontSize: responsiveFontSize(1),textDecorationLine: 'underline',fontFamily: Font.bold, textAlign:'center',alignSelf:'center',}}>
+قم بانشاء حساب جديد
+            </Text>
+>>>>>>> 3af2a1e (,)
             </TouchableOpacity>
         </View>
+        </View>
+
       </AuthBackground>
       <View>
-      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(60) : responsiveWidth(53) ,height: width >= TABLET_WIDTH ? responsiveWidth(50) : responsiveWidth(42) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end'}}/>
+      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(42) : responsiveWidth(49) ,height: width >= TABLET_WIDTH ? responsiveWidth(45) : responsiveWidth(42) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end', marginLeft:responsiveWidth(4)}}/>
       </View>
     </View>
   );

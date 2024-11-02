@@ -2,7 +2,6 @@ import { ImageBackground, StyleSheet, Dimensions } from "react-native";
 import {responsiveHeight,responsiveWidth,responsiveFontSize} from "react-native-responsive-dimensions";
 import { Platform } from "react-native";
 import { Font } from "../../../../assets/fonts/Fonts";
-import Question from "../component/Question";
 const { width } = Dimensions.get('window');
 const TABLET_WIDTH = 968; 
 
