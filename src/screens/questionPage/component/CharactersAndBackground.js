@@ -40,6 +40,9 @@ import {
 import {TextInput, Modal, Pressable} from 'react-native';
 import {Font} from '../../../../assets/fonts/Fonts';
 import Mybutton from '../../../component/MyButton';
+import database from '@react-native-firebase/database';
+import { getAuth, createUserWithEmailAndPassword } from '@react-native-firebase/auth';
+
 
 const CharactersAndBackground = () => {
   const [isMyTurn, setIsMyTurn] = useState(false); // Initialize with true or false
@@ -58,10 +61,68 @@ const CharactersAndBackground = () => {
   const [correct_iraap, setCorrect_iraap] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
   const [result, setresult] = useState(false);
+  const [GameState,setGameState] = useState(null);
 
   let timerId;
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
+
+
+  const updateScoreAndSwitchTurn = async (roomCode, currentPlayerUid, newScore) => {
+    const roomRef = database().ref(`/rooms/${roomCode}`);
+    
+    const snapshot = await roomRef.once('value');
+    const roomData = snapshot.val();
+    
+    if (roomData) {
+      if (roomData.player1.uid === currentPlayerUid) {
+        // Update player1 score and switch turn to player2
+        await roomRef.update({
+          'player1/score': newScore,
+          turn: 'player2'
+        });
+      } else if (roomData.player2.uid === currentPlayerUid) {
+        // Update player2 score and switch turn to player1
+        await roomRef.update({
+          'player2/score': newScore,
+          turn: 'player1'
+        });
+      }
+    }
+    };
+
+
+const listenToRoomChanges = (roomCode) => {
+  const roomRef = database().ref(`/rooms/${roomCode}`);
+  
+  roomRef.on('value', (snapshot) => {
+    const roomData = snapshot.val();
+    setGameState(roomData); // Update the state with the room data
+    //otherPlayerCanplay
+    //role
+
+    if (roomData.player1.uid === "123456782" && roomData.turn === "player1" ){ //change id from locaStorage
+      setIsMyTurn(false)
+    }
+    else{
+      setIsMyTurn(true)
+    }
+  });
+  };
+  
+  // To stop listening (when leaving the game or component unmounting):
+  const stopListening = (roomCode) => {
+  const roomRef = database().ref(`/rooms/${roomCode}`);
+  roomRef.off(); // Detach the listener
+  };
+  
+  useEffect(() => {
+  
+
+    listenToRoomChanges("HZB2VF")
+   
+  }, [GameState]);
+
 
   useEffect(() => {
     if (timeLeft > 0 && !isInputDisabled) {
@@ -108,7 +169,7 @@ const CharactersAndBackground = () => {
     console.log("User's Irab:", wordInput);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/run-model', {
+      const response = await fetch('http://127.0.0.1:3000/run-model', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,6 +199,7 @@ const CharactersAndBackground = () => {
       if (correctIrabMatch) {
         extractedCorrectIrab = correctIrabMatch[1].trim();
         setCorrect_iraap(extractedCorrectIrab);
+        updateScoreAndSwitchTurn("HZB2VF","123456782","5")
       }
     } catch (error) {
       console.error('Error in handleSendSentence:', error);
@@ -326,7 +388,7 @@ const CharactersAndBackground = () => {
                     placeholder="أدخل الجملة هنا"
                     editable={!isInputDisabled}
                   />
-                  <View style={{paddingVertical: responsiveWidth(3)}}>
+                  <View style={{paddingVertical: responsiveWidth(3),alignSelf:'center'}}>
                     <Mybutton
                       ButtonName="ارسال"
                       op={handleButtonPress}

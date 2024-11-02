@@ -47,16 +47,16 @@ const ChooseTypeOfGame = () => {
 
     return (
         <View style={Styles.ChooseTypeOfGameContainer}>
-            <TouchableOpacity style={Styles.rightImage} onPress={() => navigation.navigate('PlayWithFriend')}>
+            <TouchableOpacity style={Styles.rightImage} onPress={() => navigation.navigate('EnterCode')}>
                 <Images imageStyle={Styles.PlayWithAFriend} localSource={require('../../../../assets/images/p1.png')} />
-                <Text style={[Styles.TextStyle, {fontSize: responsiveFontSize(2), marginBottom: responsiveHeight(3), color: "#CBA6FF"}]}>
+                <Text style={[Styles.TextStyle, {fontSize: responsiveFontSize(1.5), marginBottom: responsiveHeight(3), color: "#CBA6FF"}]}>
                     ألعب مع صديق
                 </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={Styles.rightImage} onPress={handleCreateRoom}>
                 <Images imageStyle={Styles.PlayWithAFriend} localSource={require('../../../../assets/images/p2.png')} />
-                <Text style={[Styles.TextStyle, {fontSize: responsiveFontSize(2), marginBottom: responsiveHeight(3), color: "#8AC9FF"}]}>
+                <Text style={[Styles.TextStyle, {fontSize: responsiveFontSize(1.5), marginBottom: responsiveHeight(3), color: "#8AC9FF"}]}>
                     أبدأ الأن
                 </Text>
             </TouchableOpacity>
