@@ -23,7 +23,7 @@ const MainStackes = () =>{
 
       <Stack.Screen name="QuestionPage" component={QuestionPage} options={{ headerShown: false }} />  
       <Stack.Screen name="EnterASentences" component={EnterASentences} options={{ headerShown: false }} /> 
-      <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />   
+      {/* <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />    */}
 
 
 
