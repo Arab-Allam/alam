@@ -1,45 +1,53 @@
-import React, { useState } from 'react';
-import {Text, View, Dimensions, TouchableOpacity, Pressable, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Pressable,
+  Alert,
+} from 'react-native';
 import Title from '../../component/Title';
 import AuthBackground from '../../component/AuthBackground';
 import MyTextinput from '../../../../component/MyTextinput';
 import Styles from '../../component/Style';
 import Mybutton from '../../../../component/MyButton';
-import {responsiveFontSize,responsiveWidth,responsiveHeight} from 'react-native-responsive-dimensions';
-import { Font } from '../../../../../assets/fonts/Fonts';
+import {
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
+import {Font} from '../../../../../assets/fonts/Fonts';
 import Images from '../../../../component/Images';
-import { useNavigation } from '@react-navigation/native';
-import Signup from '../../signup/Signup';
-import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
+import firestore from '../../../../../firebase';
 
-const { width } = Dimensions.get('window');
-const TABLET_WIDTH = 968; 
-
-const signinUser = async (email, password) => {
-  try {
-    const response = await axios.post('https://your-api-url.com/signin', {
-      email,
-      password
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Signin error:', error);
-    throw error;
-  }
-};
+const {width} = Dimensions.get('window');
+const TABLET_WIDTH = 968;
 
 const Signin = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignin = async () => {
+  // Login User
+  const loginUser = async () => {
     try {
-      const result = await signinUser(email, password);
-      Alert.alert('Success', 'Signin successful!');
-      navigation.navigate('TypeOfGame');
+      const usersRef = firestore.collection('users');
+      const query = usersRef
+        .where('email', '==', email)
+        .where('password', '==', password);
+      const querySnapshot = await query.get();
+
+      if (!querySnapshot.empty) {
+        console.log('User logged in!');
+        navigation.navigate('TypeOfGame')
+        // Handle user login
+      } else {
+        console.log('User not found or wrong password!');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Signin failed. Please try again.');
+      console.error('Error logging in user: ', error);
     }
   };
 
@@ -47,25 +55,36 @@ const Signin = () => {
     <View style={Styles.container}>
       <AuthBackground style={{flex: 1}}>
         <View
-          style={{
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'flex-start',
-          }}>
+          style={{alignItems: 'center', flex: 1, justifyContent: 'flex-start'}}>
           <View
-            style={{alignItems: 'center', flex: 1, justifyContent: 'center',fontFamily:Font.bold,}}>
+            style={{
+              justifyContent: 'flex-start',
+              marginTop: responsiveHeight(3),
+            }}>
             <Title
-              text="تسجيل دخول"
-              textStyle={{fontSize: responsiveFontSize(3),color:"#8AC9FF"}}
+              text="تسجيل الدخول"
+              textStyle={{
+                fontSize: responsiveFontSize(3),
+                color: '#8AC9FF',
+                fontFamily: Font.bold,
+              }}
             />
           </View>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent:'flex-start'}}>
+
+          <View style={{justifyContent: 'flex-start', alignItems: 'center'}}>
             <MyTextinput
               label="الإيميل"
               placeholder="Email@gmail.com"
               keyboardType="email-address"
-              labelSyle={{alignSelf: 'flex-start',fontSize: responsiveFontSize(1.7),color:'#F39E09'}}
-              styleTextInput={{height:responsiveWidth(4),fontSize:responsiveFontSize(1.5)}}
+              labelSyle={{
+                alignSelf: 'flex-start',
+                fontSize: responsiveFontSize(1.7),
+                color: '#F39E09',
+              }}
+              styleTextInput={{
+                height: responsiveWidth(4),
+                fontSize: responsiveFontSize(1.5),
+              }}
               onChangeText={setEmail}
               value={email}
             />
@@ -74,25 +93,60 @@ const Signin = () => {
               placeholder="**********"
               keyboardType="default"
               isSecire
-              labelSyle={{alignSelf: 'flex-start',fontSize: responsiveFontSize(1.7),color:'#F39E09',backgroundColor:"white",zIndex:10}}
-              styleTextInput={{height:responsiveWidth(4),fontSize:responsiveFontSize(1.5)}}
+              labelSyle={{
+                alignSelf: 'flex-start',
+                fontSize: responsiveFontSize(1.7),
+                color: '#F39E09',
+                backgroundColor: 'white',
+                zIndex: 10,
+              }}
+              styleTextInput={{
+                height: responsiveWidth(4),
+                fontSize: responsiveFontSize(1.5),
+              }}
               onChangeText={setPassword}
               value={password}
             />
           </View>
-          <View style={{ alignItems: 'center', flex: 1, justifyContent:'flex-end'}}>
-          <Mybutton ButtonName="تسجيل الدخول" op={handleSignin}/>
-        </View>
-        <TouchableOpacity style={{alignSelf:'center',justifyContent:'center', zIndex:10}} onPress={()=> navigation.navigate('Signup')}>
-              <Text style={{ color: '#8AC9FF', fontSize: responsiveFontSize(1.5), textDecorationLine: 'underline' }}>
-                إنشاء حساب
+
+          <View
+            style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+            <View
+              style={{
+                alignContent: 'flex-end',
+                alignSelf: 'flex-end',
+                marginTop: responsiveWidth(2),
+                alignSelf: 'centers',
+              }}>
+              <Mybutton ButtonName="تسجيل الدخول" op={()=>loginUser()} />
+            </View>
+            <TouchableOpacity
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                flex: 0.3,
+                zIndex: 100,
+              }}
+              onPress={() => navigation.navigate('Signup')}>
+              <Text
+                style={{
+                  color: '#8AC9FF',
+                  fontSize: responsiveFontSize(1),
+                  textDecorationLine: 'underline',
+                  fontFamily: Font.bold,
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                }}>
+                قم بانشاء حساب جديد
               </Text>
             </TouchableOpacity>
+          </View>
         </View>
       </AuthBackground>
-      <View>
-      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(60) : responsiveWidth(53) ,height: width >= TABLET_WIDTH ? responsiveWidth(50) : responsiveWidth(42) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end'}}/>
-      </View>
+      {/* <View>
+      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(42) : responsiveWidth(49) ,height: width >= TABLET_WIDTH ? responsiveWidth(45) : responsiveWidth(42) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end', marginLeft:responsiveWidth(4)}}/>
+      </View> */}
     </View>
   );
 };
