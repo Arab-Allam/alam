@@ -26,13 +26,6 @@ const MainStackes = () =>{
       <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />   
 
 
-<<<<<<< HEAD
-     {/* <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} /> */}
-      <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}/> 
-  <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
-      <Stack.Screen name="TypeOfGame" component={TypeOfGame} options={{ headerShown: false }} /> 
-=======
->>>>>>> 3af2a1e (,)
 
 
 

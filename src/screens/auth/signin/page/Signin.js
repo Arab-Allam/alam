@@ -118,7 +118,7 @@ const Signin = () => {
                 marginTop: responsiveWidth(2),
                 alignSelf: 'centers',
               }}>
-              <Mybutton ButtonName="تسجيل الدخول" op={loginUser} />
+              <Mybutton ButtonName="تسجيل الدخول" op={()=>loginUser()} />
             </View>
             <TouchableOpacity
               style={{
