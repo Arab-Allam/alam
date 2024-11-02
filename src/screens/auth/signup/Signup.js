@@ -344,8 +344,7 @@ import {responsiveFontSize, responsiveHeight, responsiveWidth} from 'react-nativ
 import {Font} from '../../../../assets/fonts/Fonts';
 import Images from '../../../component/Images';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
+import firestore from '../../../../firebase';
 
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
@@ -356,47 +355,19 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSignup = async () => {
-        console.log('Signup button pressed');
-
-        if (!name || !email || !password) {
-            Alert.alert('تنبيه', 'الرجاء ملء جميع الحقول');
-            return;
-        }
+ 
+    const registerUser = async () => {
         try {
-            // Create user with email and password (note: removed name from auth parameters)
-            const userRe = await auth().createUserWithEmailAndPassword(email, password);
-            const userId = userRe.user.uid;
-         
-            await firestore().collection('users').doc(userId).set({
-              name: name,
-              email: email,
-              createdAt: firestore.FieldValue.serverTimestamp(),
-            });
-
-            Alert.alert('نجاح', 'تم إنشاء الحساب بنجاح!', [
-                {
-                    text: 'OK',
-                    onPress: () => navigation.navigate('Signin')
-                }
-            ]);
+          const userRef = firestore.collection('users').doc();
+          await userRef.set({
+            // uid: userRef.id,
+            name: name,
+            email: email,
+            password: password, // Never store plain passwords in a real app
+          });
+          console.log('User registered!');
         } catch (error) {
-            console.error('Signup error:', error);
-            let errorMessage = 'حدث خطأ غير متوقع';
-
-            switch (error.code) {
-                case 'auth/weak-password':
-                    errorMessage = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-                    break;
-                case 'auth/email-already-in-use':
-                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'البريد الإلكتروني غير صالح';
-                    break;
-            }
-
-            Alert.alert('خطأ', errorMessage);
+          console.error('Error registering user: ', error);
         }
     };
 
@@ -484,7 +455,7 @@ const Signup = () => {
 
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <View style={{ alignContent: 'flex-end', alignSelf: 'flex-end', marginTop: responsiveWidth(2) }}>
-                            <Mybutton ButtonName="تسجيل" op={()=>handleSignup()} />
+                            <Mybutton ButtonName="تسجيل" op={()=>registerUser()} />
 
                             <TouchableOpacity 
                                 onPress={() => navigation.navigate('Signin')}
@@ -505,7 +476,7 @@ const Signup = () => {
                 </View>
             </AuthBackground>
 
-            <View>
+            {/* <View>
                 <Images
                     imageURL={require('../../../../assets/images/BigGirl.png')}
                     imageStyle={{
@@ -515,8 +486,7 @@ const Signup = () => {
                         alignSelf: 'flex-start'
                     }}
                 />
->>>>>>> 3af2a1e (,)
-            </View>
+            </View> */}
         </View>
 <<<<<<< HEAD
       </AuthBackground>
