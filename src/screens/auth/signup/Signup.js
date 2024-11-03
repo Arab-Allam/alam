@@ -153,7 +153,7 @@ const Signup = () => {
         </View>
       </AuthBackground>
 
-      <View>
+      <View style={{zIndex:0}}>
         <Images
           imageURL={require('../../../../assets/images/BigGirl.png')}
           imageStyle={{
@@ -164,6 +164,7 @@ const Signup = () => {
             marginTop:
               width >= TABLET_WIDTH ? responsiveWidth(20) : responsiveWidth(4),
             alignSelf: 'flex-start',
+            
           }}
         />
       </View>

@@ -1,17 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View,Dimensions } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { Font } from "../../../assets/fonts/Fonts";
 import database from '@react-native-firebase/database';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storageHandler } from "../utils/helpers/Helpers";
 const EnterCode = () =>{
   const { width } = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
 const [rommCode, setrommCode] = useState('');
+const createRoom = async () => {
+  const id = await storageHandler("get","playerID")
+  const name = await storageHandler("get","playerName")
+  const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  
+  try {
+    await database()
+      .ref(`rooms/${roomCode}`)
+      .set({
+        player1: {
+          uid: id,
+          name: name,
+          score: 0,
+        },
+        turn: id,
+       [id]: "question"
+      });
+    console.log("created succsefuly",roomCode)
+    return roomCode;
+  } catch (error) {
+  //   console.error("Firebase set error:", error);
+    throw error;
+  }
+};
 
-
-const joinRoom = async (roomCode, playerName, playerUid) => {
-  const roomRef = database().ref(`/rooms/${roomCode}`);
+const joinRoom = async () => {
+  const id = await storageHandler("get","playerID")
+  const name = await storageHandler("get","playerName")
+  const roomRef = database().ref(`/rooms/${rommCode}`);
   
   const snapshot = await roomRef.once('value');
   const roomData = snapshot.val(); //return data
@@ -21,10 +48,13 @@ const joinRoom = async (roomCode, playerName, playerUid) => {
       // Add player2 to the room
       await roomRef.update({
         player2: {
-          uid: playerUid,
-          name: playerName,
+          uid: id,
+          name: name,
           score: 0,
-        }
+        },
+        [id]: "selections"
+
+        
       });
       return true; // Successfully joined
     } else {
@@ -35,8 +65,22 @@ const joinRoom = async (roomCode, playerName, playerUid) => {
   }
   };
   
-
-
+// useEffect(()=>{
+//   const getAllKeysAndValues = async () => {
+//     try {
+//       // Get all keys
+//       const keys = await AsyncStorage.getAllKeys();
+//       console.log('All keys:', keys);
+  
+//       // Get all key-value pairs
+//       const result = await AsyncStorage.multiGet(keys);
+//       console.log('All key-value pairs:', result);
+//     } catch (error) {
+//       console.error('Error fetching data from AsyncStorage', error);
+//     }
+//   };
+//   getAllKeysAndValues()
+// },[])
 
     return(
 
@@ -110,7 +154,7 @@ const joinRoom = async (roomCode, playerName, playerUid) => {
       </View>
       </View>
 
-        <TouchableOpacity style={{backgroundColor:"#6CBFF8",width:responsiveWidth(45),right:responsiveWidth(5), height:responsiveHeight(10),alignSelf:'flex-end',borderRadius:responsiveFontSize(1),marginTop:1}}>
+        <TouchableOpacity style={{backgroundColor:"#6CBFF8",width:responsiveWidth(45),right:responsiveWidth(5), height:responsiveHeight(10),alignSelf:'flex-end',borderRadius:responsiveFontSize(1),marginTop:1}} onPress={()=> createRoom()}>
             <Text style={{textAlign:'center',fontFamily:Font.bold,color:'white',padding:responsiveFontSize(1.5),fontSize:responsiveFontSize(1.5)}}>دعوة  صديق للانضمام باستخدام رمز</Text>
         </TouchableOpacity>
         </View>

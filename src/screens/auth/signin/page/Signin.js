@@ -22,6 +22,9 @@ import Images from '../../../../component/Images';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '../../../../../firebase';
 import { useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storageHandler } from '../../../utils/helpers/Helpers';
+
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
@@ -39,7 +42,15 @@ const Signin = () => {
   
       if (!querySnapshot.empty) {
         console.log('User logged in!');
-        // Handle user login
+        querySnapshot.forEach( async (doc) => {
+          console.log('User logged in!');
+          console.log('User ID:', doc.id);
+          console.log('User Data:', doc.data());
+          await storageHandler("store","playerID",doc.data().uid);
+          await storageHandler("store","playerName",doc.data().name);
+          navigation.navigate("TypeOfGame")
+        }
+      )  
       } else {
         console.log('User not found or wrong password!');
       }

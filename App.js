@@ -113,8 +113,8 @@ const AppContent = () => {
 
     useEffect(() => {
         startTransition(() => {
-            clearStorage();
-            removeSpecificKeys();
+            // clearStorage();
+            // removeSpecificKeys();
             getAllKeysAndValues();
             setIsReady(true);
         });

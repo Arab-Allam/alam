@@ -7,13 +7,13 @@ import QuestionPage from "../../questionPage/page/QuestionPage";
 import Signin from "../../auth/signin/page/Signin";
 import Signup from "../../auth/signup/Signup";
 import EnterASentences from "../../enterASentences/page/EnterASentences";
-import AnswerWord from "../../enterASentences/page/AnswerWord";
 import EnterCode from "../../inviteFriend/EnterCode";
+import AnswerWord from "../../enterASentences/page/AnswerWord";
 const Stack = createStackNavigator();
 const MainStackes = () =>{
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Signin">
+      <Stack.Navigator initialRouteName="QuestionPage">
       
        <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} />
      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/> 
@@ -22,8 +22,8 @@ const MainStackes = () =>{
      <Stack.Screen name="EnterCode" component={EnterCode} options={{ headerShown: false }} />   
 
       <Stack.Screen name="QuestionPage" component={QuestionPage} options={{ headerShown: false }} />  
-      <Stack.Screen name="EnterASentences" component={EnterASentences} options={{ headerShown: false }} /> 
-      {/* <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />    */}
+      {/* <Stack.Screen name="EnterASentences" component={EnterASentences} options={{ headerShown: false }} />  */}
+      <Stack.Screen name="AnswerWord" component={AnswerWord} options={{ headerShown: false }} />   
 
 
 
