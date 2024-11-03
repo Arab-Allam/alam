@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 const MainStackes = () =>{
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="EnterCode">
+      <Stack.Navigator initialRouteName="Signin">
       
        <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} />
      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/> 

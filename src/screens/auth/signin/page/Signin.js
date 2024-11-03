@@ -21,9 +21,7 @@ import {Font} from '../../../../../assets/fonts/Fonts';
 import Images from '../../../../component/Images';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '../../../../../firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { useRef } from 'react';
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
@@ -35,17 +33,12 @@ const Signin = () => {
   // Login User
   const loginUser = async () => {
     try {
-      const usersRef = firestore.collection('users');
-      const query = usersRef
-        .where('email', '==', email)
-        .where('password', '==', password);
+      const userRef = firestore.collection('users');
+      const query = userRef.where('email', '==', email).where('password', '==', password);
       const querySnapshot = await query.get();
-
+  
       if (!querySnapshot.empty) {
         console.log('User logged in!');
-        await AsyncStorage.setItem('player1Siginin', userRef.id);
-        console.log('User registered and UID stored as player1!');
-        navigation.navigate('TypeOfGame')
         // Handle user login
       } else {
         console.log('User not found or wrong password!');
