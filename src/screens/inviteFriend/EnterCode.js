@@ -9,7 +9,7 @@ const EnterCode = () =>{
   const { width } = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
-const [rommCode, setrommCode] = useState('');
+const [roomCode, setroomCode] = useState('');
 const createRoom = async () => {
   const id = await storageHandler("get","playerID")
   const name = await storageHandler("get","playerName")
@@ -38,7 +38,7 @@ const createRoom = async () => {
 const joinRoom = async () => {
   const id = await storageHandler("get","playerID")
   const name = await storageHandler("get","playerName")
-  const roomRef = database().ref(`/rooms/${rommCode}`);
+  const roomRef = database().ref(`/rooms/${roomCode}`);
   
   const snapshot = await roomRef.once('value');
   const roomData = snapshot.val(); //return data
@@ -136,7 +136,7 @@ const joinRoom = async () => {
         top: responsiveHeight(4.8),
       }}>
         <TextInput
-        onChangeText={(val)=> setrommCode(val)}
+        onChangeText={(val)=> setroomCode(val)}
           maxLength={14} // Adjust this number based on your needs
           style={{
             backgroundColor: '#F1D7A7',
