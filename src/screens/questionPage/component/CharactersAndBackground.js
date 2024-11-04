@@ -21,7 +21,7 @@ import {
 } from '@react-native-firebase/auth';
 import {storageHandler} from '../../utils/helpers/Helpers';
 
-const CharactersAndBackground = () => {
+const CharactersAndBackground = ({ roomCode }) => {
   const [isMyTurn, setIsMyTurn] = useState(false); // Initialize with true or false
   const [writeQuestion, setwriteQuestion] = useState(false);
   const [sentence, setSentence] = useState('');
@@ -41,7 +41,7 @@ const CharactersAndBackground = () => {
   const [result, setresult] = useState(false);
   const [GameState, setGameState] = useState(null);
   const [canOtherPlayerPlay, setCanOtherPlayerPlay] = useState(null);
-  const [roomCode, setRoomCode] = useState('OL470Q');
+  const [currentRoomCode, setCurrentRoomCode] = useState(roomCode);
   const [id, setID] = useState(null);
 
   let timerId;
@@ -57,11 +57,11 @@ const CharactersAndBackground = () => {
     })();
   }, []);
 
-  console.log('isMyTurn', isMyTurn, id);
-  console.log('writeQuestion', writeQuestion, id);
+  // console.log('isMyTmjkmurn', isMyTurn, id);
+  // console.log('writeQuestion', writeQuestion, id);
 
   const updateScoreAndSwitchTurn = async () => {
-    const roomRef = database().ref(`/rooms/${roomCode}`);
+    const roomRef = database().ref(`/rooms/${currentRoomCode}`);
     const snapshot = await roomRef.once('value');
     const roomData = snapshot.val();
 
@@ -83,57 +83,65 @@ const CharactersAndBackground = () => {
     }
   };
 
-  const listenToRoomChanges = async roomCode => {
+  const listenToRoomChanges = async currentRoomCode => {
+    
     // Get the player ID from storage or another method
     // Reference to the room in Firebase
-    const roomRef = database().ref(`/rooms/${roomCode}`);
+    // console.log('currentRoomCode::',currentRoomCode);
+    // console.log('isMyTurn::',isMyTurn);
+    const roomRef = database().ref(`/rooms/${currentRoomCode}`);
 
     // Listener for any changes in the room
     roomRef.on('value', snapshot => {
       const roomData = snapshot.val(); // Retrieve the room data
+      // console.log(roomData);
       if (roomData) {
+
         setGameState(roomData); // Update the room data in the component state
 
         // Check the current turn and update turn-related states
         if (roomData.turn !== id) {
+          // console.log('roomData:::::',roomData[id])
           setIsMyTurn(false);
-          console.log(roomData[id],"okokoko")
-          if (roomData[id] === 'question') {
-            console.log(roomData[id],"kpkpkpkpkpk")
-
-            setwriteQuestion(true);
-          } else {
-            setwriteQuestion(false);
-          }
+          setwriteQuestion(false);
+          // if (roomData[id] === 'question') {
+          //   setwriteQuestion(true);
+          // } else {
+          //   setwriteQuestion(false);
+          // }
         } else {
           setIsMyTurn(true);
-          if (roomData[id] === 'question') {
-                      console.log(roomData[id],"okokoko")
+          setwriteQuestion(true);
+          // console.log('inside', isMyTurn, id);
+          
+          // if (roomData[id] === 'question') {
+          //             console.log(roomData[id],"okokoko")
 
-            setwriteQuestion(true);
-          } else {
-            setwriteQuestion(false);
-          }
+          //   setwriteQuestion(true);
+          // } else {
+          //   setwriteQuestion(false);
+          // }
         }
       }
     });
+    // console.log(isMyTurn);
   };
 
   // Detach listener when component unmounts or when leaving the room
-  const stopListening = roomCode => {
-    const roomRef = database().ref(`/rooms/${roomCode}`);
+  const stopListening = currentRoomCode => {
+    const roomRef = database().ref(`/rooms/${currentRoomCode}`);
     roomRef.off(); // Detach listener
   };
 
   useEffect(() => {
-    listenToRoomChanges(roomCode);
-  }, [GameState, isMyTurn]); // Re-run if roomCode changes
+    listenToRoomChanges(currentRoomCode);
+  }, [GameState, isMyTurn]); // Re-run if currentRoomCode changes
 
   useEffect(() => {
     if (timeLeft > 0 && !isInputDisabled) {
       timerId = setTimeout(() => {
         setTimeLeft(timeLeft - 1);
-      }, 1000);
+      }, 1000 );
     } else if (timeLeft === 0) {
       setIsInputDisabled(true);
       setIsTimeUp(true);

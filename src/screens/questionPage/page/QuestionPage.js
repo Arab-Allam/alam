@@ -1,11 +1,15 @@
 import React from "react";
 import { View } from "react-native";
 import CharactersAndBackground from "../component/CharactersAndBackground";
-const QuestionPage = ()=>{
+import { useRoute } from '@react-navigation/native';
 
+const QuestionPage = ()=>{
+    const route = useRoute(); // Get the route object
+    console.log(route);
+    const { roomCode } = route.params; 
     return(
 <View>
-    <CharactersAndBackground/>
+    <CharactersAndBackground roomCode={roomCode} />
 </View>
     )
 }

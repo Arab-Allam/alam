@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View,Dimensions } from "react-native";
+import { Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View,Dimensions, Alert } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { Font } from "../../../assets/fonts/Fonts";
+import {useNavigation} from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { storageHandler } from "../utils/helpers/Helpers";
+
+
 const EnterCode = () =>{
   const { width } = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
 const [roomCode, setroomCode] = useState('');
+const navigation = useNavigation();
+
 const createRoom = async () => {
   const id = await storageHandler("get","playerID")
   const name = await storageHandler("get","playerName")
@@ -25,7 +30,7 @@ const createRoom = async () => {
           score: 0,
         },
         turn: id,
-       [id]: "question"
+      //  [id]: "question"
       });
     console.log("created succsefuly",roomCode)
     return roomCode;
@@ -35,7 +40,7 @@ const createRoom = async () => {
   }
 };
 
-const joinRoom = async () => {
+const joinRoom = async (roomCode) => {
   const id = await storageHandler("get","playerID")
   const name = await storageHandler("get","playerName")
   const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -44,18 +49,18 @@ const joinRoom = async () => {
   const roomData = snapshot.val(); //return data
   
   if (roomData) {
-    if (!roomData.player2) {
-      // Add player2 to the room
-      await roomRef.update({
-        player2: {
-          uid: id,
-          name: name,
-          score: 0,
-        },
-        [id]: "selections"
-
-        
-      });
+    console.log(roomData);
+    if (!roomData.player2 || (roomData.player2.uid === id) || (roomData.player1.uid === id )) {
+      if(!roomData.player2){// Add player2 to the room
+        await roomRef.update({
+          player2: {
+            uid: id,
+            name: name,
+            score: 0,
+          },
+          // [id]: "selections"
+        });
+      }
       return true; // Successfully joined
     } else {
       throw new Error('Room is full.');
@@ -63,6 +68,18 @@ const joinRoom = async () => {
   } else {
     throw new Error('Room does not exist.');
   }
+  };
+
+
+  const handleJoinRoom = () => {
+    joinRoom(roomCode)
+      .then(success => {
+        if (success) {
+          console.log('room joined successfuly');
+          navigation.navigate("QuestionPage",  {roomCode} ); // Navigate to QuestionPage on success
+        }
+      })
+      .catch(error => console.error(error.message));
   };
   
 // useEffect(()=>{
@@ -92,22 +109,22 @@ const joinRoom = async () => {
         <Image source={require("../../../assets/images/inviteBg.png")} style={{width:responsiveWidth(100), height:responsiveHeight(100), resizeMode:'cover'}} />
         <View style={{justifyContent:'center',alignItems:'center',alignContent:'center',alignSelf:'center',flex:1,position:'absolute',width:responsiveWidth(100),height:responsiveHeight(100)}}>
         <Image source={require("../../../assets/images/inviteRec.png")} style={{width:responsiveWidth(95), height:responsiveHeight(60),borderRadius:responsiveFontSize(1)}}/>
-        <View style={{flexDirection:'row',position:'absolute',alignItems:'flex-end',alignContent:"flex-end",justifyContent:'flex-end',alignSelf:'flex-end'}}>
-          <View style={{backgroundColor:'white', width:responsiveWidth(45),height:width >= TABLET_WIDTH ? responsiveFontSize(14) : responsiveFontSize(14) ,flexDirection:'row', alignSelf:'flex-start',right: responsiveWidth(5),justifyContent:'space-between',  borderRadius: responsiveFontSize(1),
+        <View style={{flexDirection:'row',position:'absolute',alignItems:'center',alignContent:"flex-end",justifyContent:'flex-end',alignSelf:'flex-end'}}>
+          {/* <View style={{backgroundColor:'white', width:responsiveWidth(45),height:width >= TABLET_WIDTH ? responsiveFontSize(14) : responsiveFontSize(14) ,flexDirection:'row', alignSelf:'flex-start',right: responsiveWidth(5),justifyContent:'space-between',  borderRadius: responsiveFontSize(1),
 }}>
 
         <View style={{backgroundColor:'white', alignSelf: 'flex-start',}}>
 <Text style={{alignSelf:'center'}}>15</Text>
 </View>
-          </View>
-<View style={{flexDirection:'column'}}>
+          </View> */}
+<View style={{flexDirection:'column', alignSelf:'center', flex: 1}}>
  <View style={{
       backgroundColor: "#EEC06B",
       width: responsiveWidth(45),
       height: responsiveHeight(18),
-      alignSelf: 'flex-end',
+      alignSelf: 'center',
       borderRadius: responsiveFontSize(1),
-      right: responsiveWidth(5),
+      
     }}>
       <TouchableOpacity style={{
         backgroundColor: '#EAA830',
@@ -121,7 +138,8 @@ const joinRoom = async () => {
         marginRight: responsiveWidth(3.6),
         zIndex: 10
       }}
-      onPress={()=> joinRoom(rommCode,"f","111")}>
+      onPress={()=> handleJoinRoom()}>
+      {/* onPress={()=> joinRoom(roomCode,"f","111")}> */}
         <Text style={{
           fontSize: responsiveFontSize(1.7),
           fontFamily: 'Your-Bold-Font',
@@ -154,7 +172,7 @@ const joinRoom = async () => {
       </View>
       </View>
 
-        <TouchableOpacity style={{backgroundColor:"#6CBFF8",width:responsiveWidth(45),right:responsiveWidth(5), height:responsiveHeight(10),alignSelf:'flex-end',borderRadius:responsiveFontSize(1),marginTop:1}} onPress={()=> createRoom()}>
+        <TouchableOpacity style={{alignSelf:'center', backgroundColor:"#6CBFF8",width:responsiveWidth(45), height:responsiveHeight(10), borderRadius:responsiveFontSize(1),marginTop:1}} onPress={()=> createRoom()}>
             <Text style={{textAlign:'center',fontFamily:Font.bold,color:'white',padding:responsiveFontSize(1.5),fontSize:responsiveFontSize(1.5)}}>دعوة  صديق للانضمام باستخدام رمز</Text>
         </TouchableOpacity>
         </View>
