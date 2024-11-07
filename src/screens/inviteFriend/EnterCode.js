@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { storageHandler } from "../utils/helpers/Helpers";
-import Clipboard from '@react-native-clipboard/clipboard';
 
 const EnterCode = () => {
   const { width } = Dimensions.get('window');
@@ -14,7 +13,7 @@ const EnterCode = () => {
 
   const [roomCode, setRoomCode] = useState('');
   const [generatedCode, setGeneratedCode] = useState(''); // State to store generated code
-  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
+  // const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
   const navigation = useNavigation();
 
   const createRoom = async () => {
@@ -39,7 +38,8 @@ const EnterCode = () => {
         });
       console.log("Room created successfully", roomCode);
       setGeneratedCode(roomCode); // Store the generated code in the state
-      setModalVisible(true); // Show the modal
+      navigation.navigate("WaitingRoom", { roomCode });
+      // setModalVisible(true); // Show the modal
       return roomCode;
     } catch (error) {
       console.error("Firebase set error:", error);
@@ -58,7 +58,7 @@ const EnterCode = () => {
     if (roomData) {
       console.log(roomData);
       if (!roomData.player2 || (roomData.player2.uid === id) || (roomData.player1.uid === id)) {
-        if (!roomData.player2) {
+        if (!roomData.player2 && (roomData.player1.uid !== id)) {
           await roomRef.update({
             player2: {
               uid: id,
@@ -88,10 +88,10 @@ const EnterCode = () => {
       .catch(error => console.error(error.message));
   };
 
-  const copyToClipboard = () => {
-    Clipboard.setString(generatedCode);
-    Alert.alert("Copied", "Room code copied to clipboard");
-  };
+  // const copyToClipboard = () => {
+  //   Clipboard.setString(generatedCode);
+  //   Alert.alert("Copied", "Room code copied to clipboard");
+  // };
 
   return (
     <View>
@@ -157,7 +157,7 @@ const EnterCode = () => {
           </View>
         </View>
 
-        {/* Modal for showing generated code */}
+        {/* Modal for showing generated code
         <Modal
           supportedOrientations={['landscape']}
 
@@ -185,7 +185,7 @@ const EnterCode = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
 
       </View>
     </View>
