@@ -40,6 +40,7 @@ const CharactersAndBackground = ({roomCode}) => {
   const [Player2, setPlayer2] = useState("");
   const [Player1Coine, setPlayer1Coine] = useState("");
   const [Player2Coine, setPlayer2Coine] = useState("");
+  const [dots, setDots] = useState('');
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
   // Load player ID on mount
@@ -54,6 +55,13 @@ const CharactersAndBackground = ({roomCode}) => {
   }, []);
 
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => prev.length >= 3 ? '' : prev + '.');
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
   
   // Handle Firebase room listener
   useEffect(() => {
@@ -724,17 +732,40 @@ const CharactersAndBackground = ({roomCode}) => {
             />
             <PlayerInfoRectangle player1Name={Player1} player1Coine={Player1Coine} player2Name={Player2} player2Coine={Player2Coine}/>
             <Question TheSentencse={trimmedSentence} TheQuestion={randomWord}/>
-            <Answers
-            roomCode={roomCode} gameRole={gameRole} Choices={Choices}/>
+            <Answers roomCode={roomCode} gameRole={gameRole} Choices={Choices}/>
 
           </View>
-            // <Mybutton ButtonStyle={{position:'absolute'}} ButtonName={"click"} op={()=> updateScoreAndSwitchTurn()}/>
         )
       ) : (
-        <View style={{backgroundColor: 'red', width:responsiveWidth(70),height:responsiveWidth(50),alignSelf:'center',justifyContent:'center',flexDirection:'column',marginTop:responsiveHeight(10),borderRadius:responsiveFontSize(1)}}>
-
-
-
+        <View style={{
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          width: responsiveWidth(74),
+          height: width >= TABLET_WIDTH ? responsiveHeight(30) : responsiveHeight(30),
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          marginTop: responsiveHeight(30),
+          borderRadius: responsiveFontSize(1)
+        }}>
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Text style={{
+              color: 'red',
+              fontSize: responsiveFontSize(2),
+            }}>
+            </Text>
+            <Text style={{
+     
+              fontSize: responsiveFontSize(2.5),
+              minWidth: responsiveWidth(8),
+              fontFamily:Font.bold
+            }}>
+                            انتظر يقوم اللاعب بالقيام بخطوته{dots}
+            </Text>
+          </View>
         </View>
       )}
     </View>

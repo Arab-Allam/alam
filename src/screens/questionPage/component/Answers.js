@@ -62,17 +62,16 @@ const Answers = ({roomCode, gameRole,Choices}) => {
     <View style={{gap:responsiveFontSize(1), marginTop:responsiveHeight(3)}}>
   
       <View style={{flexDirection: 'row', gap:20}}>
-      <TouchableOpacity style={{backgroundColor:'pink',zIndex:1000}} onPress={()=>updateScoreAndSwitchTurnAnswere()}>
-      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
-
-          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[0]} مجموع </Text>
+      <TouchableOpacity style={{zIndex:1000}} onPress={()=>updateScoreAndSwitchTurnAnswere()}>
+      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),width:responsiveWidth(29),height:responsiveWidth(6.5)}]}>
+          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2,textAlign:'center'}]}>{choices[0]}</Text>
           </View>
 
         </TouchableOpacity> 
 
 <TouchableOpacity>
-        <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
-          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[1]}</Text>
+        <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),width:responsiveWidth(29),height:responsiveWidth(6.5)}]}>
+          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2,textAlign:'center'}]}>{choices[1]}</Text>
         </View>
         </TouchableOpacity> 
       </View>
@@ -81,15 +80,15 @@ const Answers = ({roomCode, gameRole,Choices}) => {
 
       <View style={{flexDirection: 'row',gap:20}}>
       <TouchableOpacity>
-      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),}]}>
-      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[2]}</Text>
+      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),width:responsiveWidth(29),height:responsiveWidth(6.5)}]}>
+      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2,textAlign:'center'}]}>{choices[2]}</Text>
       </View>
       </TouchableOpacity> 
 
       <TouchableOpacity>
 
-      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
-      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[3]}</Text>
+      <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),width:responsiveWidth(29),height:responsiveWidth(6.5)}]}>
+      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2,textAlign:'center'}]}>{choices[3]}</Text>
       </View>
       </TouchableOpacity> 
     </View>
