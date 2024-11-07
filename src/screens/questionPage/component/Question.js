@@ -7,8 +7,8 @@ const Question = ({TheQuestion,TheSentencse}) =>{
 
     return(
         <View style={QuestionPageStyle.QuestionContainer}>
-        <Text style={[QuestionPageStyle.QuestionText,{fontSize:responsiveFontSize(2.2)}]}>ما إعــراب كـلـمـة محـمـد؟{}</Text>
-        <Text style={[QuestionPageStyle.QuestionText,{fontSize:responsiveFontSize(3)}]}>أكــل محــمــد التــفـاحــه</Text>
+        <Text style={[QuestionPageStyle.QuestionText,{fontSize:responsiveFontSize(2.2)}]}>ما إعــراب كـلـمـة {TheQuestion}</Text>
+        <Text style={[QuestionPageStyle.QuestionText,{fontSize:responsiveFontSize(3)}]}>{TheSentencse}</Text>
         </View>
 
     )

@@ -35,7 +35,7 @@ const CharactersAndBackground = ({roomCode}) => {
   const [GameState, setGameState] = useState(null);
   const [id, setID] = useState(null);
   const [Choices, setChoices] = useState([]);
-  
+  const [trimmedSentence, setTrimmedSentence] = useState([]);
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
   // Load player ID on mount
@@ -164,7 +164,7 @@ const CharactersAndBackground = ({roomCode}) => {
     console.log('User entered word:', wordInput);
     setIsWordModalVisible(false);
     handleSendSentence();
-    setWordInput('');
+    // setWordInput('');
 
     // Check if time is up
     // if (isTimeUp) {
@@ -183,7 +183,7 @@ const CharactersAndBackground = ({roomCode}) => {
     setresult(false);
     setSentence('');
     setWordInput('');
-    setRandomWord('');
+    // setRandomWord('');
     setIsTimeUp(false);
     // setTimeLeft(40);
     // setWordModalTimeLeft(40);
@@ -194,8 +194,8 @@ const CharactersAndBackground = ({roomCode}) => {
       const trimmedSentence = sentence.trim();
       
       console.log('Sending data to API:');
-      console.log('Sentence:', trimmedSentence);
-      console.log('Random Word:', randomWord);
+      console.log('Sentence:', setTrimmedSentence(trimmedSentence));
+      console.log('Random Word:', setRandomWord(randomWord));
       console.log("User's Irab:", wordInput);
 
       const response = await fetch('http://127.0.0.1:3000/run-model', {
@@ -685,7 +685,7 @@ const CharactersAndBackground = ({roomCode}) => {
               localSource={require('../../../../assets/images/sss.png')}
             />
             <PlayerInfoRectangle />
-            <Question />
+            <Question TheSentencse={trimmedSentence} TheQuestion={randomWord}/>
             <Answers Answers1={Choices[0]}
             Answers2={Choices[1]}
             Answers3={Choices[2]}
