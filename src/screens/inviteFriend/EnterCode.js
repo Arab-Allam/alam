@@ -32,7 +32,9 @@ const EnterCode = () => {
             score: 0,
           },
           turn: id,
-          role: "question"
+          role: "question",
+          
+
 
         });
       console.log("Room created successfully", roomCode);

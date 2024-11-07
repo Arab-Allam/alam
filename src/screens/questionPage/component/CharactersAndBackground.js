@@ -36,6 +36,10 @@ const CharactersAndBackground = ({roomCode}) => {
   const [id, setID] = useState(null);
   const [Choices, setChoices] = useState([]);
   const [trimmedSentence, setTrimmedSentence] = useState([]);
+  const [Player1, setPlayer1] = useState("");
+  const [Player2, setPlayer2] = useState("");
+  const [Player1Coine, setPlayer1Coine] = useState("");
+  const [Player2Coine, setPlayer2Coine] = useState("");
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
   // Load player ID on mount
@@ -49,11 +53,13 @@ const CharactersAndBackground = ({roomCode}) => {
     loadPlayerId();
   }, []);
 
+
+  
   // Handle Firebase room listener
   useEffect(() => {
     let roomRef;
     let unsubscribe;
-
+  
     const setupRoomListener = () => {
       if (roomCode) {
         roomRef = database().ref(`/rooms/${roomCode}`);
@@ -63,14 +69,22 @@ const CharactersAndBackground = ({roomCode}) => {
             setGameState(roomData);
             setIsMyTurn(roomData.turn === id);
             setGameRole(roomData.role);
+            setPlayer1(roomData.player1.name)
+            setPlayer2(roomData.player2.name)
+            setPlayer1Coine(roomData.player1.score)
+            setPlayer2Coine(roomData.player2.score)
+            // Also set choices when in selection mode
+            if(roomData.role === "selection") {
+              setTrimmedSentence(roomData.trimmedSentence);
+              setChoices(roomData.choices || []); // Preserve choices
+            }
           }
         });
       }
     };
-
+  
     setupRoomListener();
-
-    // Cleanup function
+  
     return () => {
       if (unsubscribe && roomRef) {
         roomRef.off('value', unsubscribe);
@@ -116,29 +130,42 @@ const CharactersAndBackground = ({roomCode}) => {
     };
   }, [isWordModalVisible, wordModalTimeLeft]);
 
+
   const updateScoreAndSwitchTurn = async () => {
     try {
       const roomRef = database().ref(`/rooms/${roomCode}`);
       const snapshot = await roomRef.once('value');
       const roomData = snapshot.val();
-
+  
       if (!roomData) return;
-
+  
+      // Get current values from the database
+      const currentChoices = roomData.choices || [];
+      const currentTrimmedSentence = roomData.trimmedSentence || '';
+  
       const updates = {
         turn: roomData.player1.uid === id ? roomData.player2.uid : roomData.player1.uid,
         inWaitngRoom: id,
         role: gameRole === "selection" ? "question" : "selection",
       };
-
-    
+  
+      // Always preserve choices and trimmedSentence regardless of role
+      updates.choices = Choices.length > 0 ? Choices : currentChoices;
+      updates.trimmedSentence = currentTrimmedSentence;
+  
+      // Update the score based on the player's ID
       if (roomData.player1.uid === id) {
-        updates['player1/score'] = '1';
+        updates['player1/score'] = Player1Coine + 1;
       } else if (roomData.player2.uid === id) {
-        updates['player2/score'] = '1';
+        updates['player2/score'] = Player2Coine + 1;
       }
-
+      
+      console.log('Updating room with:', updates); // Debug log
+      
+      // Apply the updates to Firebase using set instead of update to ensure all fields are preserved
       await roomRef.update(updates);
       
+      // Reset local state
       setIsModalVisible(false);
       setShowResultModal(false);
       setIsWordModalVisible(false);
@@ -183,71 +210,77 @@ const CharactersAndBackground = ({roomCode}) => {
     setresult(false);
     setSentence('');
     setWordInput('');
-    // setRandomWord('');
     setIsTimeUp(false);
-    // setTimeLeft(40);
-    // setWordModalTimeLeft(40);
   };
   
   const handleSendSentence = async () => {
-    try {
-      const trimmedSentence = sentence.trim();
-      
-      console.log('Sending data to API:');
-      console.log('Sentence:', setTrimmedSentence(trimmedSentence));
-      console.log('Random Word:', setRandomWord(randomWord));
-      console.log("User's Irab:", wordInput);
-
-      const response = await fetch('http://127.0.0.1:3000/run-model', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sentence: trimmedSentence,
-          word: randomWord,
-          irab: wordInput,
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      const analysis = data.analysis;
-
-      let extractedFinalAnswer = null;
-      let extractedCorrectIrab = null;
-      
-      setresult(data.result);
-
-      if (analysis.includes('الإجابة النهائية')) {
-        extractedFinalAnswer = analysis
-          .split('الإجابة النهائية:')[1]
-          .split('\n')[0]
-          .trim();
-        setAnswer(extractedFinalAnswer);
+    if (gameRole === "question") {
+      try {
+        const trimmedSentenceValue = sentence.trim();
+        
+        // Immediately update Firebase with the trimmed sentence
+        const roomRef = database().ref(`/rooms/${roomCode}`);
+        await roomRef.update({
+          trimmedSentence: trimmedSentenceValue
+        });
+  
+        setTrimmedSentence(trimmedSentenceValue);
+  
+        console.log('Sending data to API:');
+        console.log('Sentence:', trimmedSentenceValue);
+        console.log('Random Word:', randomWord);
+        console.log("User's Irab:", wordInput);
+  
+        const response = await fetch('http://127.0.0.1:3000/run-model', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sentence: trimmedSentenceValue,
+            word: randomWord,
+            irab: wordInput,
+          }),
+        });
+  
+        const data = await response.json();
+        console.log(data);
+        const analysis = data.analysis;
+  
+        let extractedFinalAnswer = null;
+        let extractedCorrectIrab = null;
+        
+        setresult(data.result);
+  
+        if (analysis.includes('الإجابة النهائية')) {
+          extractedFinalAnswer = analysis
+            .split('الإجابة النهائية:')[1]
+            .split('\n')[0]
+            .trim();
+          setAnswer(extractedFinalAnswer);
+        }
+  
+        const correctIrabMatch = analysis.match(/- الإعراب الصحيح:\s*(.+)/);
+        if (correctIrabMatch) {
+          extractedCorrectIrab = correctIrabMatch[1].trim();
+          setCorrect_iraap(extractedCorrectIrab);
+          generateRandomIrab(extractedCorrectIrab);
+        }
+  
+        setShowResultModal(true);
+  
+        setTimeout(async () => {
+          await updateScoreAndSwitchTurn();
+          clearResults();
+        }, 3000);
+  
+      } catch (error) {
+        console.error('Error in handleSendSentence:', error);
+        setIsModalVisible(true);
       }
-
-      const correctIrabMatch = analysis.match(/- الإعراب الصحيح:\s*(.+)/);
-      if (correctIrabMatch) {
-        extractedCorrectIrab = correctIrabMatch[1].trim();
-        setCorrect_iraap(extractedCorrectIrab);
-        generateRandomIrab(extractedCorrectIrab);
-      }
-      // Show result modal first
-      setShowResultModal(true);
-
-      // Wait for a short time to show results before clearing
-      setTimeout(async () => {
-        await updateScoreAndSwitchTurn();
-        clearResults();
-      }, 3000); // Adjust timing as needed
-
-    } catch (error) {
-      console.error('Error in handleSendSentence:', error);
-      // Handle error appropriately - maybe show an error modal
-      setIsModalVisible(true);
     }
   };
+
   const handleModalClose = () => {
     setShowResultModal(false);
     clearResults();
@@ -264,14 +297,16 @@ const CharactersAndBackground = ({roomCode}) => {
         "اسم موصول", "مفعول فيه", "ظرف زمان", "مبتدأ", "خبر", "فاعل", "مفعول به",
         "حال", "تمييز", "مضاف إليه", "نعت", "عطف بيان", "توكيد", "بدل", "مفعول مطلق",
         "مفعول لأجله", "مفعول معه", "مستثنى", "منادى", "اسم إن", "خبر إن", "اسم كان",
-        "خبر كان", "نائب فاعل", "حرف جر", "حرف توكيد ونصب", "حرف عطف", "اسم مجرور"];
+        "خبر كان", "نائب فاعل", "حرف جر", "حرف توكيد ونصب", "حرف عطف", "اسم مجرور"
+    ];
   
     const cases = ["مرفوع", "منصوب", "مجرور", "مجزوم", "مبني"];
     const caseMarkers = {
         "مرفوع": ["الضمة", "الواو", "الألف", "ثبوت النون"],
         "منصوب": ["الفتحة", "الألف", "الياء", "الكسرة", "حذف النون"],
         "مجرور": ["الكسرة", "الياء", "الفتحة"],
-        "مجزوم": ["السكون", "حذف حرف العلة", "حذف النون"]};
+        "مجزوم": ["السكون", "حذف حرف العلة", "حذف النون"]
+    };
   
     let randomChoices = [];
     while (randomChoices.length < 3) {
@@ -293,23 +328,26 @@ const CharactersAndBackground = ({roomCode}) => {
             caseDescription = `${grammaticalCase} وعلامة ${caseMarker} ${marker}`;
         }
         let irab = `${role} ${caseDescription}`;
-        // Avoid repetition of words
         irab = [...new Set(irab.split(' '))].join(' ');
-        // Ensure uniqueness of irab
         if (!randomChoices.includes(irab)) {
             randomChoices.push(irab);
         }
     }
   
-    // Add the correct irab (4th choice)
     randomChoices.push(correctIrab);
-    // Shuffle the list to randomize the order, including the correct answer
     randomChoices = randomChoices.sort(() => Math.random() - 0.5);
-    setChoices(randomChoices);
-    console.log(randomChoices)
+    
+    // Update choices in state and Firebase
+  setChoices(randomChoices);
+  const roomRef = database().ref(`/rooms/${roomCode}`);
+  roomRef.update({
+    choices: randomChoices,
+    // Also preserve the trimmedSentence when updating choices
+    trimmedSentence: sentence.trim()
+  });
+
+    console.log(randomChoices);
   };
-
-
 
 
 
@@ -684,13 +722,10 @@ const CharactersAndBackground = ({roomCode}) => {
               imageStyle={QuestionPageStyle.ss}
               localSource={require('../../../../assets/images/sss.png')}
             />
-            <PlayerInfoRectangle />
+            <PlayerInfoRectangle player1Name={Player1} player1Coine={Player1Coine} player2Name={Player2} player2Coine={Player2Coine}/>
             <Question TheSentencse={trimmedSentence} TheQuestion={randomWord}/>
-            <Answers Answers1={Choices[0]}
-            Answers2={Choices[1]}
-            Answers3={Choices[2]}
-            Answers4={Choices[3]}
-            roomCode={roomCode} gameRole={gameRole} setGameState={setGameState} GameState={GameState} setIsMyTurn={setIsMyTurn}/>
+            <Answers
+            roomCode={roomCode} gameRole={gameRole} Choices={Choices}/>
 
           </View>
             // <Mybutton ButtonStyle={{position:'absolute'}} ButtonName={"click"} op={()=> updateScoreAndSwitchTurn()}/>

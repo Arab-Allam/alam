@@ -11,9 +11,9 @@ import database from '@react-native-firebase/database';
 import {storageHandler} from '../../utils/helpers/Helpers';
 
 
-const Answers = ({Answers1,Answers2,Answers3,Answers4,roomCode, gameRole, GameState,setGameState,setIsMyTurn,op}) => {
+const Answers = ({roomCode, gameRole,Choices}) => {
   const [id, setID] = useState(null);
-  
+  const [choices, setChoices] = useState([]);
   useEffect(() => {
     (async () => {
       const id = await storageHandler('get', 'playerID');
@@ -24,11 +24,16 @@ const Answers = ({Answers1,Answers2,Answers3,Answers4,roomCode, gameRole, GameSt
   }, []);
 
 
-
+  useEffect(()=>{
+    setChoices(Choices)
+  },[Choices])
 
 
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
+
+
+
   const updateScoreAndSwitchTurnAnswere = async () => {
     console.log("clcikedddd")
     const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -53,36 +58,6 @@ const Answers = ({Answers1,Answers2,Answers3,Answers4,roomCode, gameRole, GameSt
     }
   };
 
-
-
-  // const listenToRoomChanges = async () => {
-
-  //   const roomRef = database().ref(`/rooms/${roomCode}`);
-
-  //   roomRef.on('value', snapshot => {
-  //     const roomData = snapshot.val();
-
-
-  //     if (roomData) {
-  //       setGameState(roomData);
-
-  //       // Update isMyTurn and writeQuestion based on turn
-  //       if (roomData.turn === id) {
-  //         setIsMyTurn(true);
-  //       } else {
-  //         setIsMyTurn(false);
-  //       }
-  //     }
-  //   });
-  
-  // };
-
-  // useEffect(() => {
-  //   listenToRoomChanges();
-  // }, [GameState]); 
-
-
-
   return (
     <View style={{gap:responsiveFontSize(1), marginTop:responsiveHeight(3)}}>
   
@@ -90,14 +65,14 @@ const Answers = ({Answers1,Answers2,Answers3,Answers4,roomCode, gameRole, GameSt
       <TouchableOpacity style={{backgroundColor:'pink',zIndex:1000}} onPress={()=>updateScoreAndSwitchTurnAnswere()}>
       <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
 
-          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}> {Answers1} مجموع </Text>
+          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[0]} مجموع </Text>
           </View>
 
         </TouchableOpacity> 
 
 <TouchableOpacity>
         <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
-          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{Answers2}</Text>
+          <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[1]}</Text>
         </View>
         </TouchableOpacity> 
       </View>
@@ -107,14 +82,14 @@ const Answers = ({Answers1,Answers2,Answers3,Answers4,roomCode, gameRole, GameSt
       <View style={{flexDirection: 'row',gap:20}}>
       <TouchableOpacity>
       <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1),}]}>
-      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{Answers3}</Text>
+      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[2]}</Text>
       </View>
       </TouchableOpacity> 
 
       <TouchableOpacity>
 
       <View style={[QuestionPageStyle.scoreBox,{alignItems:'center',borderRadius: responsiveWidth(1)}]}>
-      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{Answers4}</Text>
+      <Text style={[QuestionPageStyle.pointsText,{padding:width >= TABLET_WIDTH ? 10: 2}]}>{choices[3]}</Text>
       </View>
       </TouchableOpacity> 
     </View>
