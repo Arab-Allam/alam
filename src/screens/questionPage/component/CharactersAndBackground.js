@@ -260,7 +260,7 @@ const CharactersAndBackground = ({roomCode}) => {
           setAnswer(extractedFinalAnswer);
         }
   
-        const correctIrabMatch = analysis.match(/- الإعراب الصحيح:\s*(.+)/);
+        const correctIrabMatch = analysis.match(/- الإعراب الصحيح:\s*.*?\(([^)]+)\)/);
         if (correctIrabMatch) {
           extractedCorrectIrab = correctIrabMatch[1].trim();
           setCorrect_iraap(extractedCorrectIrab);
@@ -731,11 +731,10 @@ const CharactersAndBackground = ({roomCode}) => {
             // <Mybutton ButtonStyle={{position:'absolute'}} ButtonName={"click"} op={()=> updateScoreAndSwitchTurn()}/>
         )
       ) : (
-        <View style={{backgroundColor: 'red'}}>
-          <Text>اهثابjfejwfjwefuewhfuehfuehfuehfuehfuehfuwehfeuهثابثه</Text>
-          <Text>اهثابjfejwfjwefuewhfuehfuehfuehfuehfuehfuwehfeuهثابثه</Text>
-          <Text>اهثابjfejwfjwefuewhfuehfuehfuehfuehfuehfuwehfeuهثابثه</Text>
-          <Text>اهثابjfejwfjwefuewhfuehfuehfuehfuehfuehfuwehfeuهثابثه</Text>
+        <View style={{backgroundColor: 'red', width:responsiveWidth(70),height:responsiveWidth(50),alignSelf:'center',justifyContent:'center',flexDirection:'column',marginTop:responsiveHeight(10),borderRadius:responsiveFontSize(1)}}>
+
+
+
         </View>
       )}
     </View>
