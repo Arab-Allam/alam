@@ -85,10 +85,9 @@ const CharactersAndBackground = ({roomCode}) => {
               setCorrect_iraap(roomData.correct_iraap);
               setresult(roomData.result)
             }
-            if(roomData.role === "selection") {
               setTrimmedSentence(roomData.trimmedSentence);
-              setChoices(roomData.choices || []); // Preserve choices
-            }
+              setChoices(roomData.choices); // Preserve choices
+            
           }
         });
       }
@@ -162,7 +161,7 @@ const CharactersAndBackground = ({roomCode}) => {
       };
   
       // Always preserve choices and trimmedSentence regardless of role
-      updates.choices = Choices.length > 0 ? Choices : currentChoices;
+      updates.choices = Choices
       updates.trimmedSentence = currentTrimmedSentence;
       updates.correct_iraap = currentCorrectIraap ;
   
@@ -228,7 +227,7 @@ const CharactersAndBackground = ({roomCode}) => {
   };
   
   const handleSendSentence = async () => {
-    if (gameRole === "question") {
+   
       try {
         const trimmedSentenceValue = sentence.trim();
         
@@ -284,6 +283,7 @@ const CharactersAndBackground = ({roomCode}) => {
             correct_iraap: extractedCorrectIrab
           });
           generateRandomIrab(extractedCorrectIrab);
+          console.log("generateRandomIrab is done")
         }
         
         // First update the room with analysis results
@@ -295,7 +295,7 @@ const CharactersAndBackground = ({roomCode}) => {
         console.log(data.result,"ث")
         console.log(answer,"ث")
         // Handle score reduction for incorrect answers
-        if (data.result === 0 || answer === "خاطئ") {
+        if (data.result === 0 || extractedFinalAnswer === "خاطئ") {
           const roomRef = database().ref(`/rooms/${roomCode}`);
           const snapshot = await roomRef.once('value');
           const roomData = snapshot.val();
@@ -307,6 +307,7 @@ const CharactersAndBackground = ({roomCode}) => {
           
           if (roomData.player1.uid === id) {
             updates['player1/score'] = (parseInt(roomData.player1.score) || 0) - 1;
+            updates['player2/role'] = "question"
           } else if (roomData.player2.uid === id) {
             updates['player2/score'] = (parseInt(roomData.player2.score) || 0) - 1;
           }
@@ -327,7 +328,7 @@ const CharactersAndBackground = ({roomCode}) => {
         console.error('Error in handleSendSentence:', error);
         setIsModalVisible(true);
       }
-    }
+    
   };
 
   const handleModalClose = () => {
@@ -396,6 +397,7 @@ const CharactersAndBackground = ({roomCode}) => {
   });
 
     console.log(randomChoices);
+
   };
 
 
@@ -742,23 +744,6 @@ const CharactersAndBackground = ({roomCode}) => {
               الإجابة النهائية: {answer}
             </Text>
             {/* <Text>{result}</Text> */}
-            <Pressable
-              onPress={() => setShowResultModal(false)}
-              style={{
-                backgroundColor: '#6CBFF8',
-                padding: 10,
-                borderRadius: 5,
-                marginTop: 20,
-              }}>
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(1.2),
-                  fontFamily: Font.bold,
-                  color: '#fff',
-                }}>
-                إغلاق
-              </Text>
-            </Pressable>
           </View>
         </View>
       </Modal>
@@ -808,3 +793,4 @@ const CharactersAndBackground = ({roomCode}) => {
 
 export default CharactersAndBackground;
 
+// LOG  Updating room with: {"choices": ["خبر كان مرفوع وعلامة رفعه الضمة", "ظرف زمان مجرور وعلامة جره الفتحة", "فعل ماضي", "حرف عطف مبني على الضم"], "correct_iraap": undefined, "inWaitngRoom": "TEujWprLYLf3sqBdi3R8", "role": "selection", "trimmedSentence": "ذهب محمد للحديقه", "turn": "oYqKpl71OO2IkNWHv2DH"}

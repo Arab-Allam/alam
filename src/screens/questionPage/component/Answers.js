@@ -26,20 +26,20 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
     loadPlayerId();
   }, []);
 
-  useEffect(() => {
-    setChoices(Choices);
-  }, [Choices]);
+  useEffect(()=>{
+    setChoices(Choices)
+  },[Choices])
 
   const { width } = Dimensions.get('window');
   const TABLET_WIDTH = 968;
 
-  const handleChoiceSelection = async (Choices, index) => {
+  const handleChoiceSelection = async (choices, index) => {
     if (isAnswered) return; // Prevent multiple selections
     
     setSelectedChoice(index);
     setIsAnswered(true);
 
-    const isCorrect = Choices === correctIrab;
+    const isCorrect = choices === correctIrab;
     
     try {
       const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -52,7 +52,7 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
       const updates = {
         role: gameRole === "question" ? "selection" : "question",
         lastAnswer: {
-          choices: Choices,
+          choices: choices,
           isCorrect: isCorrect,
           playerId: id,
          
@@ -65,6 +65,13 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
           updates['player1/score'] = (parseInt(roomData.player1.score) || 0) + 1;
         } else if (roomData.player2.uid === id) {
           updates['player2/score'] = (parseInt(roomData.player2.score) || 0) + 1;
+        }
+      }
+      else{
+        if (roomData.player1.uid === id) {
+          updates['player1/score'] = (parseInt(roomData.player1.score) || 0) - 1;
+        } else if (roomData.player2.uid === id) {
+          updates['player2/score'] = (parseInt(roomData.player2.score) || 0) - 1;
         }
       }
 
