@@ -82,6 +82,9 @@ const CharactersAndBackground = ({roomCode}) => {
             setPlayer1Coine(roomData.player1.score)
             setPlayer2Coine(roomData.player2.score)
             // Also set choices when in selection mode
+            if (roomData.randomWord) {
+              setRandomWord(roomData.randomWord);
+            }
             if(roomData.role === "selection") {
               setTrimmedSentence(roomData.trimmedSentence);
               setChoices(roomData.choices || []); // Preserve choices
@@ -229,7 +232,8 @@ const CharactersAndBackground = ({roomCode}) => {
         // Immediately update Firebase with the trimmed sentence
         const roomRef = database().ref(`/rooms/${roomCode}`);
         await roomRef.update({
-          trimmedSentence: trimmedSentenceValue
+          trimmedSentence: trimmedSentenceValue,
+          randomWord: randomWord 
         });
   
         setTrimmedSentence(trimmedSentenceValue);
@@ -358,6 +362,9 @@ const CharactersAndBackground = ({roomCode}) => {
   };
 
 
+
+
+  
 
   return (
     <View >
