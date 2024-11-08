@@ -167,10 +167,11 @@ const CharactersAndBackground = ({roomCode}) => {
       updates.correct_iraap = currentCorrectIraap ;
   
       // Update the score based on the player's ID
+      if (result === "0" && answer === "خاطئ")
       if (roomData.player1.uid === id) {
-        updates['player1/score'] = Player1Coine + 1;
+        updates['player1/score'] = Player1Coine - 1;
       } else if (roomData.player2.uid === id) {
-        updates['player2/score'] = Player2Coine + 1;
+        updates['player2/score'] = Player2Coine -1;
       }
       
       console.log('Updating room with:', updates); // Debug log
@@ -218,9 +219,9 @@ const CharactersAndBackground = ({roomCode}) => {
     // }
   }
   const clearResults = () => {
-    setAnswer(null);
+    // setAnswer(null);
     setCorrect_iraap(null);
-    setresult(false);
+    // setresult(false);
     setSentence('');
     setWordInput('');
     setIsTimeUp(false);
@@ -278,24 +279,50 @@ const CharactersAndBackground = ({roomCode}) => {
         if (correctIrabMatch) {
           extractedCorrectIrab = correctIrabMatch[1].trim();
           setCorrect_iraap(extractedCorrectIrab);
+     
           await roomRef.update({
             correct_iraap: extractedCorrectIrab
           });
           generateRandomIrab(extractedCorrectIrab);
         }
-  
+        
+        // First update the room with analysis results
         await roomRef.update({
           correct_iraap: extractedCorrectIrab,
-          analysisResult: data.result
+          analysisResult: data.result,
+          result: data.result // Make sure the result is stored in Firebase
         });
-
+        console.log(data.result,"ث")
+        console.log(answer,"ث")
+        // Handle score reduction for incorrect answers
+        if (data.result === 0 || answer === "خاطئ") {
+          const roomRef = database().ref(`/rooms/${roomCode}`);
+          const snapshot = await roomRef.once('value');
+          const roomData = snapshot.val();
+          console.log(data.result, "jojojojoj");
+          console.log(answer, "jojojojoj");
+        
+          // Create an updates object
+          const updates = {};
+          
+          if (roomData.player1.uid === id) {
+            updates['player1/score'] = (parseInt(roomData.player1.score) || 0) - 1;
+          } else if (roomData.player2.uid === id) {
+            updates['player2/score'] = (parseInt(roomData.player2.score) || 0) - 1;
+          }
+        
+          // Apply the updates if there are any
+          if (Object.keys(updates).length > 0) {
+            await roomRef.update(updates);
+          }
+        }
+        
         setShowResultModal(true);
-  
+        
         setTimeout(async () => {
           await updateScoreAndSwitchTurn();
           clearResults();
         }, 3000);
-  
       } catch (error) {
         console.error('Error in handleSendSentence:', error);
         setIsModalVisible(true);

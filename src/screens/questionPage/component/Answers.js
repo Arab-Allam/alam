@@ -33,13 +33,13 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
   const { width } = Dimensions.get('window');
   const TABLET_WIDTH = 968;
 
-  const handleChoiceSelection = async (choice, index) => {
+  const handleChoiceSelection = async (Choices, index) => {
     if (isAnswered) return; // Prevent multiple selections
     
     setSelectedChoice(index);
     setIsAnswered(true);
 
-    const isCorrect = choice === correctIrab;
+    const isCorrect = Choices === correctIrab;
     
     try {
       const roomRef = database().ref(`/rooms/${roomCode}`);
@@ -52,10 +52,10 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
       const updates = {
         role: gameRole === "question" ? "selection" : "question",
         lastAnswer: {
-          choice: choice,
+          choices: Choices,
           isCorrect: isCorrect,
           playerId: id,
-          timestamp: Date.now()
+         
         }
       };
 
