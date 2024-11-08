@@ -28,7 +28,7 @@ const EnterCode = () => {
           player1: {
             uid: id,
             name: name,
-            score: 0,
+            score: 5,
           },
           turn: id,
           role: "question",
@@ -63,7 +63,7 @@ const EnterCode = () => {
             player2: {
               uid: id,
               name: name,
-              score: 0,
+              score: 5,
             },
             inWaitngRoom:id
           });

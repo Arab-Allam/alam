@@ -5,12 +5,7 @@ import QuestionPageStyle from '../page/QuestionPageStyle';
 import PlayerInfoRectangle from './PlayerInfoRectangle';
 import Question from './Question';
 import Answers from './Answers';
-import {
-  responsiveScreenWidth,
-  responsiveHeight,
-  responsiveFontSize,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+import {responsiveScreenWidth,responsiveHeight,responsiveFontSize,responsiveWidth} from 'react-native-responsive-dimensions';
 import {Font} from '../../../../assets/fonts/Fonts';
 import Mybutton from '../../../component/MyButton';
 import database from '@react-native-firebase/database';
@@ -43,6 +38,7 @@ const CharactersAndBackground = ({roomCode}) => {
   const [dots, setDots] = useState('');
   const {width} = Dimensions.get('window');
   const TABLET_WIDTH = 968;
+
   // Load player ID on mount
   useEffect(() => {
     const loadPlayerId = async () => {
@@ -85,6 +81,10 @@ const CharactersAndBackground = ({roomCode}) => {
             if (roomData.randomWord) {
               setRandomWord(roomData.randomWord);
             }
+            if (roomData.correct_iraap) {
+              setCorrect_iraap(roomData.correct_iraap);
+              setresult(roomData.result)
+            }
             if(roomData.role === "selection") {
               setTrimmedSentence(roomData.trimmedSentence);
               setChoices(roomData.choices || []); // Preserve choices
@@ -104,42 +104,42 @@ const CharactersAndBackground = ({roomCode}) => {
   }, [roomCode, id]);
 
   // Handle main timer
-  useEffect(() => {
-    let timerId;
-    if (timeLeft > 0) {
-      timerId = setTimeout(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setIsTimeUp(true);
-      setTimeout(() => {
-        setIsModalVisible(true);
-      }, 1000);
-    }
-    return () => {
-      if (timerId) clearTimeout(timerId);
-    };
-  }, [timeLeft]);
+  // useEffect(() => {
+  //   let timerId;
+  //   if (timeLeft > 0) {
+  //     timerId = setTimeout(() => {
+  //       setTimeLeft(prev => prev - 1);
+  //     }, 1000);
+  //   } else if (timeLeft === 0) {
+  //     setIsTimeUp(true);
+  //     setTimeout(() => {
+  //       setIsModalVisible(true);
+  //     }, 1000);
+  //   }
+  //   return () => {
+  //     if (timerId) clearTimeout(timerId);
+  //   };
+  // }, [timeLeft]);
 
-  // Handle word modal timer
-  useEffect(() => {
-    let wordTimerId;
+  // // Handle word modal timer
+  // useEffect(() => {
+  //   let wordTimerId;
 
-    if (isWordModalVisible && wordModalTimeLeft > 0) {
-      wordTimerId = setTimeout(() => {
-        setWordModalTimeLeft(prev => prev - 1);
-      }, 1000);
-    } else if (wordModalTimeLeft === 0) {
-      setIsTimeUp(true);
-      setTimeout(() => {
-        setIsModalVisible(true);
-      }, 1000);
-    }
+  //   if (isWordModalVisible && wordModalTimeLeft > 0) {
+  //     wordTimerId = setTimeout(() => {
+  //       setWordModalTimeLeft(prev => prev - 1);
+  //     }, 1000);
+  //   } else if (wordModalTimeLeft === 0) {
+  //     setIsTimeUp(true);
+  //     setTimeout(() => {
+  //       setIsModalVisible(true);
+  //     }, 1000);
+  //   }
 
-    return () => {
-      if (wordTimerId) clearTimeout(wordTimerId);
-    };
-  }, [isWordModalVisible, wordModalTimeLeft]);
+  //   return () => {
+  //     if (wordTimerId) clearTimeout(wordTimerId);
+  //   };
+  // }, [isWordModalVisible, wordModalTimeLeft]);
 
 
   const updateScoreAndSwitchTurn = async () => {
@@ -153,7 +153,8 @@ const CharactersAndBackground = ({roomCode}) => {
       // Get current values from the database
       const currentChoices = roomData.choices || [];
       const currentTrimmedSentence = roomData.trimmedSentence || '';
-  
+      const currentCorrectIraap = roomData.correctIrab
+
       const updates = {
         turn: roomData.player1.uid === id ? roomData.player2.uid : roomData.player1.uid,
         inWaitngRoom: id,
@@ -163,6 +164,7 @@ const CharactersAndBackground = ({roomCode}) => {
       // Always preserve choices and trimmedSentence regardless of role
       updates.choices = Choices.length > 0 ? Choices : currentChoices;
       updates.trimmedSentence = currentTrimmedSentence;
+      updates.correct_iraap = currentCorrectIraap ;
   
       // Update the score based on the player's ID
       if (roomData.player1.uid === id) {
@@ -179,7 +181,7 @@ const CharactersAndBackground = ({roomCode}) => {
       // Reset local state
       setIsModalVisible(false);
       setShowResultModal(false);
-      setIsWordModalVisible(false);
+      // setIsWordModellVisible(false);
     } catch (error) {
       console.error('Error updating score:', error);
     }
@@ -195,7 +197,7 @@ const CharactersAndBackground = ({roomCode}) => {
     const randomIndex = Math.floor(Math.random() * words.length);
     setRandomWord(words[randomIndex]);
     setIsWordModalVisible(true);
-    setWordModalTimeLeft(20);
+    // setWordModalTimeLeft(20);
   };
 
   const handleWordSubmit = () => {
@@ -276,9 +278,17 @@ const CharactersAndBackground = ({roomCode}) => {
         if (correctIrabMatch) {
           extractedCorrectIrab = correctIrabMatch[1].trim();
           setCorrect_iraap(extractedCorrectIrab);
+          await roomRef.update({
+            correct_iraap: extractedCorrectIrab
+          });
           generateRandomIrab(extractedCorrectIrab);
         }
   
+        await roomRef.update({
+          correct_iraap: extractedCorrectIrab,
+          analysisResult: data.result
+        });
+
         setShowResultModal(true);
   
         setTimeout(async () => {
@@ -300,7 +310,7 @@ const CharactersAndBackground = ({roomCode}) => {
 
   const closeModal = () => {
     setIsModalVisible(false);
-    setIsTimeUp(false);
+    // setIsTimeUp(false);
   };
 
 
@@ -362,10 +372,6 @@ const CharactersAndBackground = ({roomCode}) => {
   };
 
 
-
-
-  
-
   return (
     <View >
       
@@ -409,7 +415,7 @@ const CharactersAndBackground = ({roomCode}) => {
           borderRadius: responsiveFontSize(1.4),
           top: responsiveHeight(14),
         }}>
-        <Text
+        {/* <Text
           style={{
             position: 'absolute',
             top: responsiveHeight(5.7),
@@ -419,7 +425,7 @@ const CharactersAndBackground = ({roomCode}) => {
             fontFamily: Font.bold,
           }}>
           {timeLeft}s
-        </Text>
+        </Text> */}
         <View
           style={{
             flex: 1,
@@ -602,10 +608,10 @@ const CharactersAndBackground = ({roomCode}) => {
               onChangeText={setWordInput}
               placeholder="اعرب الكلمة هنا"
             />
-            <Text
+            {/* <Text
               style={{fontSize: responsiveFontSize(1), marginBottom: 10}}>
               {wordModalTimeLeft}s left
-            </Text>
+            </Text> */}
             <Pressable
               onPress={()=>handleWordSubmit()}
               style={{
@@ -739,7 +745,7 @@ const CharactersAndBackground = ({roomCode}) => {
             />
             <PlayerInfoRectangle player1Name={Player1} player1Coine={Player1Coine} player2Name={Player2} player2Coine={Player2Coine}/>
             <Question TheSentencse={trimmedSentence} TheQuestion={randomWord}/>
-            <Answers roomCode={roomCode} gameRole={gameRole} Choices={Choices}/>
+            <Answers roomCode={roomCode} gameRole={gameRole} Choices={Choices} correctIrab={correct_iraap}/>
 
           </View>
         )
@@ -764,13 +770,7 @@ const CharactersAndBackground = ({roomCode}) => {
               fontSize: responsiveFontSize(2),
             }}>
             </Text>
-            <Text style={{
-     
-              fontSize: responsiveFontSize(2.5),
-              minWidth: responsiveWidth(8),
-              fontFamily:Font.bold
-            }}>
-                            انتظر يقوم اللاعب بالقيام بخطوته{dots}
+            <Text style={{fontSize: width >= TABLET_WIDTH ? responsiveHeight(4) :responsiveHeight(4.5),fontFamily:Font.bold}}> انتظر يقوم اللاعب بلعب دوره{dots}
             </Text>
           </View>
         </View>
