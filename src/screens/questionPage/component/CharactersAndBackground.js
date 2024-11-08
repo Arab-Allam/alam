@@ -96,9 +96,9 @@ const CharactersAndBackground = ({roomCode}) => {
               setTrimmedSentence(roomData.trimmedSentence);
               setChoices(roomData.choices); // Preserve choices
 
-              if (roomData.player1.score === 0) {
+              if (roomData.player1.score <= 0) {
                 handleGameEnd(roomData.player1.name, roomData.player2.name);
-              } else if (roomData.player2.score === 0) {
+              } else if (roomData.player2.score <= 0) {
                 handleGameEnd(roomData.player2.name, roomData.player1.name);
               }
           }
