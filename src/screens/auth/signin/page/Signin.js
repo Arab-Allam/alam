@@ -152,9 +152,9 @@ const Signin = () => {
           </View>
         </View>
       </AuthBackground>
-      {/* <View>
-      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(42) : responsiveWidth(49) ,height: width >= TABLET_WIDTH ? responsiveWidth(45) : responsiveWidth(42) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end', marginLeft:responsiveWidth(4)}}/>
-      </View> */}
+      <View>
+      <Images imageURL={require('../../../../../assets/images/BigBoy.png')} imageStyle={{width: width >= TABLET_WIDTH ? responsiveWidth(35) : responsiveWidth(40) ,height: width >= TABLET_WIDTH ? responsiveWidth(42) : responsiveWidth(40) ,marginTop: width >= TABLET_WIDTH ? responsiveWidth(20):responsiveWidth(8), alignSelf:'flex-end', marginLeft:responsiveWidth(4)}}/>
+      </View>
     </View>
   );
 };
