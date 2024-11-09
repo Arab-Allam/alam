@@ -55,41 +55,9 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
           choices: choices,
           isCorrect: isCorrect,
           playerId: id,
+         
         }
       };
-      // Show feedback to player
-      console.log('isCorrect:::::',isCorrect);
-      console.log('choices === correctIrab',choices === correctIrab);
-      // console.log('checkSelection',checkSelection);
-      Alert.alert(
-        isCorrect ? "🚀 إجابة صحيحة" : "✖️ إجابة خاطئة",
-        [{ text: "حسنا", onPress: () => {
-          updateScoreAndSwitchTurnAnswere(isCorrect);
-        }}] 
-        );
-        setTimeout(async () => {
-          await roomRef.update(updates);
-        }, 3000); 
-
-      // // Prepare updates object
-      // const updates = {
-      //   role: gameRole === "question" ? "selection" : "question",
-      // };
-      // await roomRef.update(updates);
-      
-
-    } catch (error) {
-      console.error('Error handling choice selection:', error);
-      Alert.alert("خطأ", "حدث خطأ أثناء معالجة إجابتك");
-    }
-  };
-
-  const updateScoreAndSwitchTurnAnswere = async (isCorrect) => {
-    try {
-      const roomRef = database().ref(`/rooms/${roomCode}`);
-      const snapshot = await roomRef.once('value');
-      const roomData = snapshot.val();
-      const updates = {};
 
       // Update score if correct
       if (isCorrect) {
@@ -106,6 +74,28 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
           updates['player2/score'] = (parseInt(roomData.player2.score) || 0) - 1;
         }
       }
+
+      await roomRef.update(updates);
+      // Show feedback to player
+      Alert.alert(
+        isCorrect ? "إجابة صحيحة! 🎉" : "إجابة خاطئة",
+        isCorrect 
+          ? "أحسنت! لقد اخترت الإجابة الصحيحة"
+          : `للأسف إجابة غير صحيحة. الإجابة الصحيحة هي: ${correctIrab}`,
+        [{ text: "حسناً", onPress: () =>  updateScoreAndSwitchTurnAnswere() }]
+      );
+
+    } catch (error) {
+      console.error('Error handling choice selection:', error);
+      Alert.alert("خطأ", "حدث خطأ أثناء معالجة إجابتك");
+    }
+  };
+
+  const updateScoreAndSwitchTurnAnswere = async () => {
+    try {
+      const roomRef = database().ref(`/rooms/${roomCode}`);
+      const snapshot = await roomRef.once('value');
+      const roomData = snapshot.val();
 
       if (roomData) {
         const updates = {
