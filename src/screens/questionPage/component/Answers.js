@@ -149,8 +149,8 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
             <Text style={[
               QuestionPageStyle.pointsText,
               { 
-                padding: width >= TABLET_WIDTH ? 10 : 2,
-                textAlign: 'right',
+                // padding: width >= TABLET_WIDTH ? 10 : 2,
+                textAlign: 'center',
                 color: isAnswered && (choices[0] === correctIrab || selectedChoice === 0) ? 'white' : 'black'
               }
             ]}>
@@ -166,9 +166,9 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
             <Text style={[
               QuestionPageStyle.pointsText,
               {
-                padding: width >= TABLET_WIDTH ? 10 : 2,
-                textAlign: 'right',
-                color: isAnswered && (choices[1] === correctIrab || selectedChoice === 1) ? 'white' : 'black'
+                // padding: width >= TABLET_WIDTH ? 10 : 2,
+                textAlign: 'center',
+                color: isAnswered && (choices[1] === correctIrab || selectedChoice === 1) ? 'white' : 'black',
               }
             ]}>
               {choices[1]}
@@ -185,8 +185,8 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
             <Text style={[
               QuestionPageStyle.pointsText,
               {
-                padding: width >= TABLET_WIDTH ? 10 : 2,
-                textAlign: 'right',
+                // padding: width >= TABLET_WIDTH ? 10 : 2,
+                textAlign: 'center',
                 color: isAnswered && (choices[2] === correctIrab || selectedChoice === 2) ? 'white' : 'black'
               }
             ]}>
@@ -202,8 +202,8 @@ const Answers = ({ roomCode, gameRole, Choices, correctIrab }) => {
             <Text style={[
               QuestionPageStyle.pointsText,
               {
-                padding: width >= TABLET_WIDTH ? 10 : 2,
-                textAlign: 'right',
+                // padding: width >= TABLET_WIDTH ? 10 : 2,
+                textAlign: 'center',
                 color: isAnswered && (choices[3] === correctIrab || selectedChoice === 3) ? 'white' : 'black'
               }
             ]}>
