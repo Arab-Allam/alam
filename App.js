@@ -87,7 +87,6 @@ import React, { useState, useEffect, Suspense, startTransition } from "react";
 import { SafeAreaView, Text, View, ActivityIndicator } from "react-native";
 import TypeOfGame from "./src/screens/typeOfGame/page/TypeOfGame";
 import MainStackes from "./src/screens/mainStack/page/MainStackes";
-import firebase from '@react-native-firebase/app';
 import {useTranslation} from 'react-i18next';
 import RNRestart from 'react-native-restart';
 import {I18nManager} from 'react-native';
@@ -98,7 +97,6 @@ import {
     storageHandler,
     clearStorage,
 } from './src/screens/utils/helpers/Helpers';
-import auth from '@react-native-firebase/auth';
 
 const LoadingFallback = () => (
   <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -113,8 +111,8 @@ const AppContent = () => {
 
     useEffect(() => {
         startTransition(() => {
-            clearStorage();
-            removeSpecificKeys();
+            // clearStorage();
+            // removeSpecificKeys();
             getAllKeysAndValues();
             setIsReady(true);
         });

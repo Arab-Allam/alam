@@ -14,12 +14,12 @@ const PlayerInfoRectangle = ({player1Name,player1Coine,player2Name,player2Coine}
       {/* player1 */}
       <View style={QuestionPageStyle.playerSection}>
         <View style={QuestionPageStyle.scoreBox}>
-          <Text style={QuestionPageStyle.nameText}>أميرة</Text>
+          <Text style={QuestionPageStyle.nameText}>{player1Name}</Text>
           <View style={{flexDirection:'row',height:responsiveHeight(4.5)}}>
           <Text style={[QuestionPageStyle.pointsText,]}> مجموع النقاط :</Text>
           <View style={{flex:1,alignItems:'flex-end',flexDirection:'row',bottom:responsiveHeight(0.5)}}>
-          <Text style={[QuestionPageStyle.pointsText,{fontSize:responsiveFontSize(2), color:"#5766CC",fontWeight:'800', bottom: width >= TABLET_WIDTH ? responsiveHeight(1): responsiveHeight(0.5),left:responsiveWidth(0.2)}]}> 10   </Text>
-          <Images localSource={require('../../../../assets/images/Coine.png')} imageStyle={[QuestionPageStyle.Coine,{bottom: width >= TABLET_WIDTH ? responsiveHeight(0): responsiveHeight(0)}]}/>
+          <Text style={[QuestionPageStyle.pointsText,{fontSize:responsiveFontSize(2), color:"#5766CC",fontWeight:'800', bottom: width >= TABLET_WIDTH ? responsiveHeight(1): responsiveHeight(0.5),left:responsiveWidth(0.2)}]}>{player1Coine}</Text>
+          <Images localSource={require('../../../../assets/images/Coine.png')} imageStyle={[QuestionPageStyle.Coine,{bottom: width >= TABLET_WIDTH ? responsiveHeight(0): responsiveHeight(0),left:responsiveWidth(1)}]}/>
           </View>
           </View>
         </View>
@@ -28,12 +28,12 @@ const PlayerInfoRectangle = ({player1Name,player1Coine,player2Name,player2Coine}
       {/* player2 */}
       <View style={QuestionPageStyle.playerSection}>
         <View style={[QuestionPageStyle.scoreBox, QuestionPageStyle.rightAligned]}>
-          <Text style={QuestionPageStyle.nameText}>أحمد</Text>
+          <Text style={QuestionPageStyle.nameText}>{player2Name}</Text>
           <View style={{flexDirection:'row-reverse',height:responsiveHeight(4.5)}}>
           <Text style={[QuestionPageStyle.pointsText,]}>: مجموع النقاط </Text>
           <View style={{flex:1,alignItems:'flex-end',flexDirection:'row-reverse',bottom:responsiveHeight(0.5)}}>
-          <Text style={[QuestionPageStyle.pointsText,{fontSize:responsiveFontSize(2), color:"#5766CC",fontWeight:'800', bottom: width >= TABLET_WIDTH ? responsiveHeight(1): responsiveHeight(0.5),left:responsiveWidth(0.2)}]}>  10</Text>
-          <Images localSource={require('../../../../assets/images/Coine.png')} imageStyle={[QuestionPageStyle.Coine,{right: width >= TABLET_WIDTH ? responsiveWidth(0) : responsiveWidth(1),}]}/>
+          <Text style={[QuestionPageStyle.pointsText,{fontSize:responsiveFontSize(2), color:"#5766CC",fontWeight:'800', bottom: width >= TABLET_WIDTH ? responsiveHeight(1): responsiveHeight(0.5),left:responsiveWidth(0.2)}]}>{player2Coine}</Text>
+          <Images localSource={require('../../../../assets/images/Coine.png')} imageStyle={[QuestionPageStyle.Coine,{right: width >= TABLET_WIDTH ? responsiveWidth(0) : responsiveWidth(1),right:responsiveWidth(1)}]}/>
           </View>
           </View>
         </View>

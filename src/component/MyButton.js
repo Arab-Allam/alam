@@ -11,7 +11,7 @@ const TABLET_WIDTH = 968;
 const Mybutton = ({ButtonName,ButtonStyle,op})=>{
 
     return(
-        <TouchableOpacity style={{backgroundColor:'#DB6704', width: width >= TABLET_WIDTH ?responsiveWidth(28):responsiveWidth(15) ,height:width >= TABLET_WIDTH ? responsiveWidth(5.5):responsiveWidth(4.1) ,borderRadius:8, paddingTop:responsiveWidth(1) }}onPress={op}>
+        <TouchableOpacity style={[{backgroundColor:'#DB6704', width: width >= TABLET_WIDTH ?responsiveWidth(28):responsiveWidth(15) ,height:width >= TABLET_WIDTH ? responsiveWidth(5.5):responsiveWidth(4.1) ,borderRadius:8, paddingTop:responsiveWidth(1),zIndex:999 },ButtonStyle]}onPress={op}>
           <Text style={{color:'white',alignSelf:'center',fontSize:  width >= TABLET_WIDTH ? responsiveFontSize(1.8): responsiveFontSize(1.5),fontFamily:Font.bold,}}>{ButtonName}</Text>
         </TouchableOpacity>
     )

@@ -14,6 +14,7 @@ import {Font} from '../../../../assets/fonts/Fonts';
 import Images from '../../../component/Images';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '../../../../firebase';
+import { storageHandler } from '../../utils/helpers/Helpers';
 const {width} = Dimensions.get('window');
 const TABLET_WIDTH = 968;
 
@@ -27,12 +28,15 @@ const Signup = () => {
     try {
       const userRef = firestore.collection('users').doc();
       await userRef.set({
-        // uid: userRef.id,
+        uid: userRef.id,
         name: name,
         email: email,
         password: password, // Never store plain passwords in a real app
       });
       console.log('User registered!');
+      await storageHandler("store", "playerID", userRef.id);  // Save user ID
+      await storageHandler("store", "playerName", name);  
+      navigation.navigate('TypeOfGame');
     } catch (error) {
       console.error('Error registering user: ', error);
     }
@@ -153,7 +157,7 @@ const Signup = () => {
         </View>
       </AuthBackground>
 
-      <View>
+      <View style={{zIndex:0}}>
         <Images
           imageURL={require('../../../../assets/images/BigGirl.png')}
           imageStyle={{
@@ -164,6 +168,7 @@ const Signup = () => {
             marginTop:
               width >= TABLET_WIDTH ? responsiveWidth(20) : responsiveWidth(4),
             alignSelf: 'flex-start',
+            
           }}
         />
       </View>
