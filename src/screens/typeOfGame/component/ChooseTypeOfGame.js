@@ -9,27 +9,27 @@ import database from '@react-native-firebase/database';
 const { width } = Dimensions.get('window');
 const TABLET_WIDTH = 968; 
 
-const createRoom = async (playerName, playerUid) => {
-    const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+// const createRoom = async (playerName, playerUid) => {
+//     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     
-    try {
-      await database()
-        .ref(`rooms/${roomCode}`)
-        .set({
-          player1: {
-            uid: playerUid,
-            name: playerName,
-            score: 0,
-          },
-          turn: 'player1'
-        });
+//     try {
+//       await database()
+//         .ref(`rooms/${roomCode}`)
+//         .set({
+//           player1: {
+//             uid: playerUid,
+//             name: playerName,
+//             score: 0,
+//           },
+//           turn: 'player1'
+//         });
       
-      return roomCode;
-    } catch (error) {
-    //   console.error("Firebase set error:", error);
-      throw error;
-    }
-  };
+//       return roomCode;
+//     } catch (error) {
+//     //   console.error("Firebase set error:", error);
+//       throw error;
+//     }
+//   };
 
 const ChooseTypeOfGame = () => {
     const navigation = useNavigation();
@@ -54,7 +54,7 @@ const ChooseTypeOfGame = () => {
                 </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={Styles.rightImage} onPress={handleCreateRoom}>
+            <TouchableOpacity style={Styles.rightImage} >
                 <Images imageStyle={Styles.PlayWithAFriend} localSource={require('../../../../assets/images/p2.png')} />
                 <Text style={[Styles.TextStyle, {fontSize: responsiveFontSize(1.5), marginBottom: responsiveHeight(3), color: "#8AC9FF"}]}>
                     أبدأ الأن

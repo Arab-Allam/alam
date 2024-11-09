@@ -507,7 +507,7 @@ const CharactersAndBackground = ({roomCode}) => {
                         zIndex: 1,
                         borderRadius: responsiveFontSize(1),
                         backgroundColor: '#FFFFFF',
-                        width: width >= TABLET_WIDTH ? responsiveHeight(16) : responsiveHeight(16),
+                        width: width >= TABLET_WIDTH ? responsiveHeight(20) : responsiveHeight(20),
                         height: responsiveHeight(4.5),
                       }}>
                         <Text style={{

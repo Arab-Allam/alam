@@ -162,7 +162,7 @@ const Signup = () => {
           imageURL={require('../../../../assets/images/BigGirl.png')}
           imageStyle={{
             width:
-              width >= TABLET_WIDTH ? responsiveWidth(50) : responsiveWidth(53),
+              width >= TABLET_WIDTH ? responsiveWidth(46) : responsiveWidth(45),
             height:
               width >= TABLET_WIDTH ? responsiveWidth(50) : responsiveWidth(45),
             marginTop:
